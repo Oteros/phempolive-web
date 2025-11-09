@@ -18,10 +18,10 @@
   p{margin:0 0 12px}
   .hero{background:linear-gradient(180deg,#f8faf4,#eef3e5);border-bottom:1px solid var(--border)}
   .hero-inner{display:flex;gap:24px;align-items:center;justify-content:space-between}
-  .logo-main{height:86px}
-  .logo-uco{height:70px}
-  .logo-funders{height:58px}
-  @media (max-width:860px){.hero-inner{flex-direction:column;gap:12px}.logo-main{height:76px}.logo-uco{height:64px}.logo-funders{height:52px}}
+  .logo-main{height:88px}
+  .logo-uco{height:74px}
+  .logo-funders{height:62px}
+  @media (max-width:860px){.hero-inner{flex-direction:column;gap:12px}.logo-main{height:78px}.logo-uco{height:64px}.logo-funders{height:54px}}
   .section{padding-block:28px}
   .grid-2{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
   .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
@@ -32,6 +32,7 @@
   .logos-inline img{height:40px}
   .pillars{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding-left:18px}
   .source{font-size:.9rem;color:var(--muted)}
+  canvas{max-width:100%}
 </style>
 </head>
 <body>
@@ -160,116 +161,42 @@
   </footer>
 
   <!-- Librerías -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-  // -------- utilidades --------
-  const norm = s => String(s ?? '').trim().toLowerCase();
-  const pick = (row, candidates) => {
-    for (const n of candidates) if (row[n] != null) return row[n];
-    const keys = Object.keys(row);
-    for (const k of keys) if (candidates.map(norm).includes(norm(k))) return row[k];
-    return null;
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Datos embebidos (extraídos de los Excel que compartiste) -->
+  <script>
+ const CROP = {
+    years: [1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+    and:   [2385586,939586,2683488,1385023,1914195,1163037,2577322,588073,1146420,1200535,2399842,1138314,2641342,1503404,3171244,1461980,2480884,1171080,2359323,814566,2818691,1196362,2841530,942896,2832150,776955,2504390,1176621,3127594,891675,3394890,1588619,3596405,812411,3706935,1475197,4036304,1507790,3429094,1287094,505471,1446631,3939966],
+    es:    [3068800,1252077,3236700,1874900,2319000,1821500,3384300,1131300,1727700,2115800,3335900,1914500,3282100,2080700,3911900,1747700,3309300,1543700,2972300,1409300,4155800,1506100,4526600,1667900,4428200,1631800,3592600,1907200,4535300,1927300,4759200,2169100,4496200,1492800,4949300,1709100,5112600,1624300,3954600,1367600,1121500,1666400,3742700]
   };
-  const toNum = v => (v == null || v === '') ? null : Number(v);
-  async function fetchXLSX(url){
-    const res = await fetch(url, {cache:'no-store'});
-    if(!res.ok) throw new Error('No se pudo leer ' + url);
-    const buf = await res.arrayBuffer();
-    return XLSX.read(buf, {type:'array'});
-  }
 
-  // -------- 1) Cosecha: Andalucía vs España --------
-  (async () => {
-    try {
-      const wb = await fetchXLSX('data/Crop_Anuarios_JA.xlsx');
-      // intenta hoja 'Crop'; si no, primera
-      const ws = wb.Sheets['Crop'] || wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {defval:null});
+  // Fuente: /data/UCO_Pollen_OLEA_2425.xlsx  (cols: Date, City, Olea, Year)
+  // Agregado a media semanal (lunes) promediando todas las ciudades
+  const POLLEN = {
+    labels:["2024-01-08","2024-01-15","2024-01-22","2024-01-29","2024-02-05","2024-02-12","2024-02-19","2024-02-26","2024-03-04","2024-03-11","2024-03-18","2024-03-25","2024-04-01","2024-04-08","2024-04-15","2024-04-22","2024-04-29","2024-05-06","2024-05-13","2024-05-20","2024-05-27","2024-06-03","2024-06-10","2024-06-17","2024-06-24","2024-07-01","2024-07-08","2024-07-15","2024-07-22","2024-07-29","2024-08-05","2024-08-12","2024-08-19","2024-08-26","2024-09-02","2024-09-09","2024-09-16","2024-09-23","2024-09-30","2024-10-07","2024-10-14","2024-10-21","2024-10-28","2024-11-04","2024-11-11","2024-11-18","2024-11-25","2024-12-02","2024-12-09","2024-12-16","2024-12-23","2024-12-30","2025-01-06","2025-01-13","2025-01-20","2025-01-27","2025-02-03","2025-02-10","2025-02-17","2025-02-24","2025-03-03","2025-03-10","2025-03-17","2025-03-24","2025-03-31","2025-04-07","2025-04-14","2025-04-21","2025-04-28","2025-05-05","2025-05-12","2025-05-19","2025-05-26","2025-06-02","2025-06-09"],
+    values:[0,0,0,0,0,0,0,0,0,0,0,0,0,2.001257015,4.5003462,7.06869583,8.65925166,13.1324045,18.5198383,35.2347485,135.802561,128.209586,45.0568868,20.0662147,13.3264899,12.4306727,9.0363077,9.6033704,5.35077386,2.19030829,1.43641042,1.0397867,0.658480217,0.349131542,0.172086802,0.100177133,0.06953125,0.04900404,0.028265306,0.020833333,0.007352941,0.006944444,0.006944444,0.005208333,0.004032258,0.004166667,0.004166667,0.004166667,0.004166667,0.004166667,0.004166667,0.004166667,0.004166667,0.006944444,0.041666667,0.053571429,0.143650794,0.219387755,0.419117647,1.82671756,40.9917644,388.573019,1169.17574,2473.87717,2752.85916,2010.5207,2398.20708,2554.06721,338.520206,360.785714]
+  };
+  </script>
 
-      const labels = [], andal = [], spain = [];
-      for (const r of rows) {
-        const year = pick(r, ['Year','Año','Anio']);
-        const and  = pick(r, ['Andalusia','Andalucía','And','Crop_And']);
-        const es   = pick(r, ['Spain','España','ES','Crop_Spain']);
-        if (year != null) {
-          labels.push(String(year));
-          andal.push(toNum(and));
-          spain.push(toNum(es));
-        }
-      }
+  <!-- Render de gráficos (sin leer ficheros externos) -->
+  <script>
+    // Cosecha
+    new Chart(document.getElementById('cropSeries'),{
+      type:'line',
+      data:{labels:CROP.years.map(String),datasets:[
+        {label:'Andalucía (t aceituna)', data:CROP.and, tension:.25},
+        {label:'España (t aceituna)',    data:CROP.es,  tension:.25}
+      ]},
+      options:{responsive:true,plugins:{legend:{position:'bottom'}},interaction:{mode:'index',intersect:false},scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}
+    });
 
-      new Chart(document.getElementById('chartCrop'), {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Andalucía (t aceituna)', data: andal, tension: .25 },
-            { label: 'España (t aceituna)',    data: spain, tension: .25 }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom' } },
-          interaction: { mode: 'index', intersect: false }
-        }
-      });
-    } catch(e) { console.error('Cosecha (XLSX):', e); }
-  })();
-
-  // -------- 3) Polen (media semanal) --------
-  (async () => {
-    try {
-      const wb = await fetchXLSX('data/UCO_Pollen_OLEA_2425.xlsx');
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {defval:null});
-
-      let labels = [], values = [];
-
-      // Caso A: ya viene agregado con Week / Mean
-      const hasWeekMean = rows.length &&
-                          (('Week' in rows[0]) || ('week' in rows[0])) &&
-                          (('Mean' in rows[0]) || ('mean' in rows[0]));
-
-      if (hasWeekMean) {
-        for (const r of rows) {
-          labels.push(String(pick(r, ['Week','week'])));
-          values.push(toNum(pick(r, ['Mean','mean'])));
-        }
-      } else {
-        // Caso B: datos diarios -> agregamos media semanal por lunes
-        const byWeek = new Map();
-        for (const r of rows) {
-          const dRaw = pick(r, ['Date','date','Fecha']);
-          const val  = toNum(pick(r, ['Olea','olea','OLEA','Olea_avg']));
-          if (!dRaw || val == null) continue;
-
-          const d = new Date(dRaw);
-          const dow = (d.getUTCDay() + 6) % 7; // lunes=0
-          const wk = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dow));
-          const key = wk.toISOString().slice(0,10);
-
-          if (!byWeek.has(key)) byWeek.set(key, {sum:0, n:0});
-          const acc = byWeek.get(key); acc.sum += val; acc.n += 1;
-        }
-        const keys = Array.from(byWeek.keys()).sort();
-        labels = keys;
-        values = keys.map(k => +(byWeek.get(k).sum / byWeek.get(k).n).toFixed(2));
-      }
-
-      new Chart(document.getElementById('chartPollen'), {
-        type: 'bar',
-        data: { labels, datasets: [{ label: 'Olea (granos·m⁻³, media semanal)', data: values }] },
-        options: {
-          responsive: true,
-          scales: { x: { grid: { color: '#22306422' } }, y: { grid: { color: '#22306422' } } }
-        }
-      });
-    } catch(e) { console.error('Pollen (XLSX):', e); }
-  })();
-
-  // Año footer
-  const yyEl = document.getElementById('yy'); if (yyEl) yyEl.textContent = new Date().getFullYear();
-</script>
+    // Polen semanal (barras)
+    new Chart(document.getElementById('pollenWeekly'),{
+      type:'bar',
+      data:{labels:POLLEN.labels,datasets:[{label:'Olea (granos·m⁻³, media semanal)',data:POLLEN.values}]} ,
+      options:{responsive:true,scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}
+    });
+  </script>
 </body>
 </html>
