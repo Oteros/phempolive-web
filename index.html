@@ -160,39 +160,116 @@
   </footer>
 
   <!-- Librerías -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+  // -------- utilidades --------
+  const norm = s => String(s ?? '').trim().toLowerCase();
+  const pick = (row, candidates) => {
+    for (const n of candidates) if (row[n] != null) return row[n];
+    const keys = Object.keys(row);
+    for (const k of keys) if (candidates.map(norm).includes(norm(k))) return row[k];
+    return null;
+  };
+  const toNum = v => (v == null || v === '') ? null : Number(v);
+  async function fetchXLSX(url){
+    const res = await fetch(url, {cache:'no-store'});
+    if(!res.ok) throw new Error('No se pudo leer ' + url);
+    const buf = await res.arrayBuffer();
+    return XLSX.read(buf, {type:'array'});
+  }
 
-  <script>
-  // Utilidades generales
-  function fetchXLSX(url){return fetch(url).then(r=>r.arrayBuffer()).then(buf=>XLSX.read(buf,{type:'array'}));}
-  function lineBasic(ctx, labels, series, label){
-    return new Chart(ctx,{type:'line',data:{labels,datasets:series.map(s=>({label:s.name,data:s.data,fill:false,tension:.25}))},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}});}
-
-  // 1) Serie histórica de cosecha (Andalucía vs España)
-  (async()=>{
-    try{
+  // -------- 1) Cosecha: Andalucía vs España --------
+  (async () => {
+    try {
       const wb = await fetchXLSX('data/Crop_Anuarios_JA.xlsx');
-      const ws = wb.Sheets[wb.SheetNames[0]]; // esperar hoja con columnas: Year, Spain, Andalusia
-      const rows = XLSX.utils.sheet_to_json(ws,{defval:null});
-      const labels = rows.map(r=>r.Year);
-      const es = rows.map(r=>r.Spain);
-      const and = rows.map(r=>r.Andalusia);
-      lineBasic(document.getElementById('cropSeries'),labels,[{name:'España (Tm)',data:es},{name:'Andalucía (Tm)',data:and}]);
-    }catch(e){console.error('Cosecha XLSX',e)}
+      // intenta hoja 'Crop'; si no, primera
+      const ws = wb.Sheets['Crop'] || wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {defval:null});
+
+      const labels = [], andal = [], spain = [];
+      for (const r of rows) {
+        const year = pick(r, ['Year','Año','Anio']);
+        const and  = pick(r, ['Andalusia','Andalucía','And','Crop_And']);
+        const es   = pick(r, ['Spain','España','ES','Crop_Spain']);
+        if (year != null) {
+          labels.push(String(year));
+          andal.push(toNum(and));
+          spain.push(toNum(es));
+        }
+      }
+
+      new Chart(document.getElementById('chartCrop'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Andalucía (t aceituna)', data: andal, tension: .25 },
+            { label: 'España (t aceituna)',    data: spain, tension: .25 }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } },
+          interaction: { mode: 'index', intersect: false }
+        }
+      });
+    } catch(e) { console.error('Cosecha (XLSX):', e); }
   })();
 
-  // 3) Polen semanal Olea (promedios semanales)
-  (async()=>{
-    try{
+  // -------- 3) Polen (media semanal) --------
+  (async () => {
+    try {
       const wb = await fetchXLSX('data/UCO_Pollen_OLEA_2425.xlsx');
-      const ws = wb.Sheets[wb.SheetNames[0]]; // esperar columnas: Week, Mean
-      const rows = XLSX.utils.sheet_to_json(ws,{defval:null});
-      const labels = rows.map(r=>r.Week);
-      const vals = rows.map(r=>r.Mean);
-      new Chart(document.getElementById('pollenWeekly'),{type:'bar',data:{labels,datasets:[{label:'Olea (granos m⁻³, media semanal)',data:vals}]},options:{scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}});
-    }catch(e){console.error('Pollen XLSX',e)}
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {defval:null});
+
+      let labels = [], values = [];
+
+      // Caso A: ya viene agregado con Week / Mean
+      const hasWeekMean = rows.length &&
+                          (('Week' in rows[0]) || ('week' in rows[0])) &&
+                          (('Mean' in rows[0]) || ('mean' in rows[0]));
+
+      if (hasWeekMean) {
+        for (const r of rows) {
+          labels.push(String(pick(r, ['Week','week'])));
+          values.push(toNum(pick(r, ['Mean','mean'])));
+        }
+      } else {
+        // Caso B: datos diarios -> agregamos media semanal por lunes
+        const byWeek = new Map();
+        for (const r of rows) {
+          const dRaw = pick(r, ['Date','date','Fecha']);
+          const val  = toNum(pick(r, ['Olea','olea','OLEA','Olea_avg']));
+          if (!dRaw || val == null) continue;
+
+          const d = new Date(dRaw);
+          const dow = (d.getUTCDay() + 6) % 7; // lunes=0
+          const wk = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dow));
+          const key = wk.toISOString().slice(0,10);
+
+          if (!byWeek.has(key)) byWeek.set(key, {sum:0, n:0});
+          const acc = byWeek.get(key); acc.sum += val; acc.n += 1;
+        }
+        const keys = Array.from(byWeek.keys()).sort();
+        labels = keys;
+        values = keys.map(k => +(byWeek.get(k).sum / byWeek.get(k).n).toFixed(2));
+      }
+
+      new Chart(document.getElementById('chartPollen'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Olea (granos·m⁻³, media semanal)', data: values }] },
+        options: {
+          responsive: true,
+          scales: { x: { grid: { color: '#22306422' } }, y: { grid: { color: '#22306422' } } }
+        }
+      });
+    } catch(e) { console.error('Pollen (XLSX):', e); }
   })();
-  </script>
+
+  // Año footer
+  const yyEl = document.getElementById('yy'); if (yyEl) yyEl.textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
