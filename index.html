@@ -1,217 +1,198 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PheMPOlive — Predicción fenológica y de cosecha de olivar</title>
-  <meta name="description" content="PheMPOlive: Modelos fenológicos y de predicción de cosecha basados en monitorización automática de polen y datos climáticos. Universidad de Córdoba." />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
-  <style>
-    :root{ --bg:#0b1226; --card:#101a3a; --muted:#8ea0c8; --brand:#1a7f49; }
-    html,body{margin:0;padding:0;background:var(--bg);color:#e9ecf8;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,sans-serif;}
-    a{color:#9ad0ff;text-decoration:none}
-    a:hover{opacity:.9;text-decoration:underline}
-    header.hero{display:grid;grid-template-columns:120px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.25rem;border-bottom:1px solid #1e2a55;background:linear-gradient(180deg,#0c1430,#0a1229);} 
-    header.hero img.logo{height:92px;width:auto}
-    header.hero h1{margin:0;font-weight:750;letter-spacing:.3px}
-    header.hero .badges{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
-    header.hero .badges img{height:44px;background:#0e1838;border-radius:10px;padding:.35rem .6rem;border:1px solid #223064}
-    nav.tabs{display:flex;gap:.5rem;flex-wrap:wrap;padding:0 1.25rem 1.25rem;border-bottom:1px solid #1e2a55;background:linear-gradient(180deg,#0a1229,#0b132b);} 
-    nav.tabs a{padding:.55rem .8rem;border:1px solid #223064;border-radius:999px;background:#101a3a;color:#dfe8ff;font-weight:600}
-    nav.tabs a.active{background:var(--brand);border-color:var(--brand);color:white}
-    main{max-width:1100px;margin:0 auto;padding:1.25rem}
-    section{background:var(--card);border:1px solid #1f2a57;border-radius:18px;padding:1.2rem 1.2rem 1.4rem;margin:1rem 0;}
-    section h2{margin:.2rem 0 1rem 0;font-size:1.45rem;color:#fff}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-    .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem}
-    .muted{color:var(--muted)}
-    .pill{display:inline-flex;gap:.4rem;align-items:center;padding:.25rem .55rem;border:1px solid #2a3a78;border-radius:999px;background:#0f193b;color:#b6c5ef;font-size:.85rem}
-    .callout{border-left:4px solid var(--brand);background:#0f1a38;padding:.75rem 1rem;border-radius:10px}
-    .logos-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center}
-    .logos-row img{height:38px;background:#0e1838;border:1px solid #223064;border-radius:10px;padding:.35rem .6rem}
-    figure{margin:0}
-    figcaption{color:#9db0e6;font-size:.9rem;margin-top:.4rem}
-    .two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem}
-    .icon-card{background:#0e1838;border:1px solid #223064;border-radius:14px;padding:.4rem;display:flex;justify-content:center;align-items:center}
-    .icon-card img{max-width:100%;height:80px;object-fit:contain}
-    footer{max-width:1100px;margin:2rem auto 4rem auto;color:#b3c2ea}
-    .foot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-top:1px solid #243167;padding-top:1rem}
-    @media (max-width:920px){ .grid,.grid-5,.two-col{grid-template-columns:1fr} header.hero{grid-template-columns:80px 1fr} header.hero img.logo{height:70px} }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PheMPOlive · Predicción temprana y sostenible de cosecha</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style>
+  :root{
+    --ink:#1a2433; --muted:#5e6a52; --brand:#405a34; --brand-2:#6f8a3a;
+    --bg:#f3f6ef; --card:#ffffff; --border:#dfe8cf;
+  }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6}
+  .container{max-width:1100px;margin:0 auto;padding:28px 16px}
+  h1,h2{line-height:1.25;margin:0 0 16px}
+  h1{font-size:clamp(1.6rem,2.4vw,2.1rem)}
+  h2{font-size:clamp(1.2rem,2.1vw,1.6rem)}
+  p{margin:0 0 12px}
+  .hero{background:linear-gradient(180deg,#f8faf4,#eef3e5);border-bottom:1px solid var(--border)}
+  .hero-inner{display:flex;gap:24px;align-items:center;justify-content:space-between}
+  .logo-main{height:86px}
+  .logo-uco{height:70px}
+  .logo-funders{height:58px}
+  @media (max-width:860px){.hero-inner{flex-direction:column;gap:12px}.logo-main{height:76px}.logo-uco{height:64px}.logo-funders{height:52px}}
+  .section{padding-block:28px}
+  .grid-2{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+  figure{margin:0}
+  figcaption{font-size:.9rem;color:var(--muted);margin-top:6px}
+  a{color:var(--brand)}
+  .logos-inline{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .logos-inline img{height:40px}
+  .pillars{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding-left:18px}
+  .source{font-size:.9rem;color:var(--muted)}
+</style>
 </head>
 <body>
   <header class="hero">
-    <img class="logo" src="images/PheMPolive.png" alt="Logo PheMPOlive"/>
-    <div>
-      <h1>PheMPOlive — Modelización fenológica y predicción temprana de cosecha de olivar</h1>
-      <div class="logos-row" aria-label="Entidades participantes y financiación">
-        <img src="images/Logounicordoba.png" alt="Universidad de Córdoba"/>
-        <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="MICIU · AEI · UE (cofinanciado)"/>
-        <img src="images/EU_funded_horizontal_pos.svg" alt="EU funded"/>
-        <img src="images/SERI_funded_horizontal_pos.svg" alt="SERI Switzerland"/>
-      </div>
-    </div>
-    <div class="badges">
-      <span class="pill">PID2023‑152718OA‑I00</span>
-      <a class="pill" href="#seccion-5">Datos en tiempo real (EBAS)</a>
+    <div class="container hero-inner">
+      <img src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
+      <img src="images/Logounicordoba.png" alt="Universidad de Córdoba" class="logo-uco"/>
+      <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
     </div>
   </header>
 
-  <nav class="tabs" role="navigation">
-    <a href="#modelos-cosecha" class="active">1) Modelos de cosecha</a>
-    <a href="#modelos-fenologia">2) Modelos de fenología</a>
-    <a href="#pollen-semanal">3) Polen semanal</a>
-    <a href="#feno-semanal">4) Fenología semanal</a>
-    <a href="#seccion-5">5) EBAS · SYLVA</a>
-    <a href="#proyecto-equipo">Proyecto y equipo</a>
-  </nav>
-
-  <main>
-    <section id="modelos-cosecha">
-      <div class="two-col">
+  <main class="container">
+    <!-- Introducción -->
+    <section class="section" id="intro">
+      <h1>PheMPOlive (PID2023‑152718OA‑I00)</h1>
+      <p><strong>Modelización fenológica y automatización del muestreo polínico para una predicción temprana y sostenible de la producción de aceite de oliva.</strong></p>
+      <div class="grid-2">
         <div>
-          <h2>1) Modelos de predicción de cosecha de olivar</h2>
-          <p>Integramos señales aerobiológicas (concentración de <em>Olea</em>), fenología observada y meteorología a múltiples escalas para predecir el rendimiento del olivar con meses de antelación. La base metodológica se apoya en trabajos previos del grupo (p. ej., Oteros et&nbsp;al., 2014).</p>
-          <div class="callout"><strong>Ensamblado de modelos</strong> (regresión, árboles, SVM, redes neuronales), validación multi‑escala y uso de librerías procedentes de muestreo automático.</div>
+          <p><strong>Objetivo.</strong> Integrar <em>fenología</em>, <em>aerobiología</em>, <em>clima regionalizado</em> y <em>automatización</em> para anticipar la cosecha en cuatro escalas (almazara, provincia, Andalucía y España), con dos cortes de predicción (julio y noviembre).</p>
+          <p><strong>Razonamiento.</strong> El polen atmosférico resume la intensidad de floración a gran escala y, al acoplarse con el estado fenológico y los extremos climáticos, permite estimaciones robustas de rendimiento. La red automática valida y acelera este flujo de información.</p>
+          <p><strong>Equipo UCO.</strong> IP: Jose Oteros. Miembros: Carmen Galán Soldevilla, Purificación Alcázar Teno. Equipo de trabajo: Carmen García Llamas, Moisés Martínez‑Bracero, Rocío López‑Orozco, Herminia García‑Mozo.</p>
         </div>
         <figure>
-          <img src="images/Predicción.png" alt="Distribución probabilística de previsión de cosecha" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064"/>
-          <figcaption>Ejemplo de distribución de probabilidad de producción estimada (histórico demostrativo).</figcaption>
+          <img src="images/draft projecto.png" alt="Esquema del proyecto" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Esquema general: 1) Fenología, 2) Aerobiología, 3) Clima, 4) Modelos, 5) Automatización, 6) Plataforma.</figcaption>
         </figure>
       </div>
     </section>
 
-    <section id="modelos-fenologia">
-      <div class="two-col">
+    <!-- 1. Modelos de predicción de cosecha -->
+    <section class="section" id="harvest-models">
+      <h2>1) Modelos de predicción de cosecha</h2>
+      <div class="grid-2">
         <div>
-          <h2>2) Modelos fenológicos</h2>
-          <p>Estimación de fenofases (botón floral → floración → cuajado) mediante GDD, requisitos de frío y condiciones hídricas, calibradas con observaciones semanales. La información fenológica es clave para interpretar el polen atmosférico y ajustar la predicción de cosecha.</p>
+          <p>Se implementa un <strong>ensamblado</strong> de métodos (regresión aditiva, Random Forest, SVM, redes neuronales y PLS) con tres familias de predictores: (a) <em>indicadores polínicos</em> (intensidad, umbrales, fechas de inicio/pico/fin), (b) <em>ventanas meteorológicas</em> críticas (agua y temperatura, especialmente en cuajado/lipogénesis) y (c) <em>estado fenológico</em> regionalizado.</p>
+          <p>La relación entre polen y producción está documentada por el Grupo RNM‑130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
+          <figure>
+            <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+            <figcaption>Arquitectura del sistema de predicción y fuentes de predictores.</figcaption>
+          </figure>
         </div>
         <figure>
-          <img src="images/feno de campo.png" alt="Seguimiento fenológico en campo" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064"/>
-          <figcaption>Seguimiento fenológico en campo (ejemplos).</figcaption>
+          <img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Distribución de olivares y gradientes ambientales usados en la regionalización.</figcaption>
+        </figure>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <h3>Serie histórica de producción · Andalucía vs España</h3>
+        <canvas id="cropSeries" height="120"></canvas>
+        <p class="source">Fuente: Anuarios de Estadística Agraria (Ministerio de Agricultura, Pesca y Alimentación) y Junta de Andalucía.</p>
+      </div>
+    </section>
+
+    <!-- 2. Modelo fenológico -->
+    <section class="section" id="phenology">
+      <h2>2) Modelo fenológico</h2>
+      <div class="grid-2">
+        <div>
+          <p>Se emplea <strong>PhenoFlex</strong> (acumulación de frío + calor con transición sigmoidal) y un banco comparativo de 21 métodos (paquete <em>phenoR</em>) para seleccionar el mejor desempeño (MAE/RMSE). La validación se realiza con series largas de la provincia de Córdoba y la regionalización sobre la superficie de olivar a 0.1°.</p>
+          <p>La imagen de <em>floración</em> de <em>Olea europaea</em> sirve como referencia visual de las fases BBCH. El <strong>seguimiento semanal de fenología</strong> combina visitas de campo y material fotográfico estandarizado.</p>
+        </div>
+        <figure>
+          <img src="images/floracion.jpg" alt="Floración de olivo" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Fases BBCH durante la floración.</figcaption>
+        </figure>
+      </div>
+      <div class="grid-2" style="margin-top:10px">
+        <figure>
+          <img src="images/feno de campo.png" alt="Seguimiento semanal de fenología" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Seguimiento semanal de fenología en olivares de Córdoba.</figcaption>
+        </figure>
+        <figure>
+          <img src="images/Imagen6.gif" alt="Progresión espacial de fases" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Progresión espacial de fases (animación).</figcaption>
         </figure>
       </div>
     </section>
 
-    <section id="pollen-semanal">
+    <!-- 3. Polen semanal -->
+    <section class="section" id="pollen-weekly">
       <h2>3) Polen de olivo (semanal)</h2>
-      <div class="grid">
-        <div>
-          <canvas id="chartPollen" height="190" role="img" aria-label="Serie semanal de polen de olivo"></canvas>
-        </div>
-        <figure>
-          <img src="images/granos de polen.png" alt="Granos de polen de olivo" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064"/>
-          <figcaption>Granos de polen de <em>Olea europaea</em>.</figcaption>
-        </figure>
+      <p>El polen de <em>Olea</em> es un <strong>bioindicador directo</strong> de la intensidad de floración a escala regional. Aquí se muestran medias semanales de la concentración atmosférica registradas en la provincia de Córdoba; estos indicadores alimentan los modelos de cosecha y permiten estimaciones tempranas.</p>
+      <div class="card">
+        <canvas id="pollenWeekly" height="120"></canvas>
+        <p class="source">Datos RNM‑130/UCO (red provincial de captadores Hirst y estaciones automáticas en transición).</p>
       </div>
     </section>
 
-    <section id="feno-semanal">
-      <h2>4) Fenología (galería semanal)</h2>
-      <div class="grid">
-        <figure>
-          <img src="images/feno de campo.png" alt="Observaciones fenológicas" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064"/>
-          <figcaption>Observaciones in situ.</figcaption>
-        </figure>
-        <figure>
-          <img src="images/Imagen6.gif" alt="Evolución espacial (ejemplo)" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064"/>
-          <figcaption>Evolución espacial (ilustración).</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section id="seccion-5">
-      <h2>5) Datos en tiempo real de polen de olivo — EBAS / NILU</h2>
-      <div class="two-col">
+    <!-- 4. EBAS / SYLVA real time -->
+    <section class="section" id="ebas">
+      <h2>4) Datos de polen en tiempo real (EBAS) · <span style="color:var(--brand)">SYLVA</span></h2>
+      <div class="grid-2">
         <div>
-          <p>La visualización en tiempo real (incluido <em>Olea</em>) se ofrece en <strong>EBAS/NILU</strong>. Estos flujos existen gracias a <strong>SYLVA</strong>, que ha permitido automatizar el muestreo en el sur del Mediterráneo y generar librerías de entrenamiento para múltiples dispositivos, incluyendo especies clave como el olivo.</p>
-          <div class="callout">
-            <p>Portal EBAS: <a href="https://ebas-data.nilu.no/" target="_blank" rel="noopener">ebas-data.nilu.no</a><br/>
-            Conjuntos de referencia SYLVA: <a href="https://data.sylva.bioaerosol.eu/" target="_blank" rel="noopener">data.sylva.bioaerosol.eu</a></p>
+          <p>Los datos en <strong>tiempo real</strong> proceden de <strong>SYLVA</strong>, que ha permitido la <strong>automatización del muestreo</strong> en el sur del Mediterráneo y la generación de <em>librerías de entrenamiento</em> para distintos dispositivos (BAA500, Swisens Poleno Jupiter y PollenSense), incluyendo especies clave como el <em>olivo</em>. Acceso mediante <a href="https://ebas-data.nilu.no/" target="_blank" rel="noopener">EBAS (NILU)</a>. Conjuntos de referencia: <a href="https://data.sylva.bioaerosol.eu/" target="_blank" rel="noopener">data.sylva.bioaerosol.eu</a>.</p>
+          <div class="logos-inline" style="margin-top:10px">
+            <img src="images/LogoEBAS.png" alt="EBAS"/>
+            <img src="images/SYLVA-sylva.png" alt="SYLVA"/>
+            <img src="images/EU_funded_horizontal_pos.svg" alt="Funded by the European Union"/>
+            <img src="images/SERI_funded_horizontal_pos.svg" alt="Supported by SERI (Switzerland)"/>
           </div>
         </div>
         <figure>
-          <img src="images/LogoEBAS.png" alt="EBAS / NILU" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064;background:#0f1838;padding:.6rem"/>
-          <figcaption>Acceso a datos atmosféricos de referencia.</figcaption>
-          <img src="images/SYLVA-sylva.png" alt="Proyecto SYLVA" style="width:100%;height:auto;margin-top:10px;border-radius:14px;border:1px solid #223064;background:#0f1838;padding:.6rem"/>
-          <figcaption>Los datos mostrados derivan de la automatización lograda por SYLVA.</figcaption>
+          <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Principales dispositivos automáticos empleados/validados en SYLVA.</figcaption>
         </figure>
       </div>
-      <figure>
-        <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" style="width:100%;height:auto;border-radius:14px;border:1px solid #223064;margin-top:10px"/>
-        <figcaption>Dispositivos automáticos usados en el Mediterráneo.</figcaption>
-      </figure>
     </section>
 
-    <section id="proyecto-equipo">
-      <h2>Proyecto y equipo</h2>
-      <p><strong>PID2023‑152718OA‑I00</strong> — <em>Modelización Fenológica y automatización del Muestreo Polínico para una predicción temprana y sostenible de la producción de aceite de Oliva</em>.</p>
-      <p><strong>IP:</strong> José Oteros. <strong>Equipo de investigación:</strong> Carmen Galán Soldevilla, Purificación Alcázar Teno. <strong>Equipo de trabajo:</strong> Carmen García‑Llamas, Moisés Martínez Bracero, Rocío López Orozco, Herminia García‑Mozo (Universidad de Córdoba).</p>
-      <div class="grid-5" style="margin-top:.8rem">
-        <div class="icon-card"><img src="images/draft projecto.png" alt="Estructura del proyecto"/></div>
-        <div class="icon-card"><img src="images/Enfoque predictivo.png" alt="Enfoque predictivo"/></div>
-        <div class="icon-card"><img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental"/></div>
-        <div class="icon-card"><img src="images/floracion.jpg" alt="Floración"/></div>
-        <div class="icon-card"><img src="images/granos de polen.png" alt="Polen"/></div>
-        <div class="icon-card"><img src="images/Imagen6.gif" alt="Mapa animado"/></div>
-        <div class="icon-card"><img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación"/></div>
-        <div class="icon-card"><img src="images/EU_funded_horizontal_pos.svg" alt="EU funded"/></div>
-        <div class="icon-card"><img src="images/feno de campo.png" alt="Fenología de campo"/></div>
-        <div class="icon-card"><img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos"/></div>
-      </div>
+    <!-- 5. Componentes del proyecto -->
+    <section class="section" id="pillars">
+      <h2>5) Componentes del proyecto</h2>
+      <ol class="pillars">
+        <li><strong>Fenología</strong>: modelización PhenoFlex y comparación de métodos; regionalización sobre superficie de olivar.</li>
+        <li><strong>Aerobiología</strong>: parámetros de estación polínica (intensidad, duración, picos, umbrales) y homogeneización con automáticos.</li>
+        <li><strong>Meteorología</strong>: clima regionalizado (ECA&D/Copernicus) y extremos en ventanas críticas.</li>
+        <li><strong>Modelos de cosecha</strong>: ensamblado multi‑modelo (predicciones en julio y noviembre) con distribución de probabilidad.</li>
+        <li><strong>Automatización & plataforma</strong>: red automática, integración EBAS y portal de información para el sector.</li>
+      </ol>
     </section>
-
-    <section id="crop-anuarios">
-      <h2>Producción de aceituna (Andalucía vs España)</h2>
-      <div class="grid">
-        <div><canvas id="chartCrop" height="210" role="img" aria-label="Serie de producción de aceituna Andalucía y España"></canvas></div>
-        <div class="callout"><strong>Fuente</strong>: Anuarios de Estadística Agraria — Ministerio de Agricultura, Pesca y Alimentación (MAPA). </div>
-      </div>
-    </section>
-
   </main>
 
-  <footer>
-    <div class="foot">
-      <div>© <span id="yy"></span> Universidad de Córdoba · PheMPOlive</div>
-      <div class="logos-row">
-        <img src="images/logo_cordoba.png" alt="UCO escudo"/>
-        <img src="images/Logounicordoba.png" alt="UCO"/>
-        <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="MICIU‑AEI‑UE"/>
-      </div>
+  <footer class="hero">
+    <div class="container" style="text-align:center">
+      <p><strong>PheMPOlive</strong> — Universidad de Córdoba · PID2023‑152718OA‑I00.</p>
     </div>
   </footer>
 
+  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- Datos embebidos para despliegue estático (generados desde ficheros XLSX) -->
-  <script id="pollen-data" type="application/json"></script>
-  <script id="crop-data" type="application/json"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <script>
-    // Inserta los datos convertidos (se pegarán a continuación durante el build)
-    const pollenData = {REPLACE_POLLEN_JSON};
-    const cropData   = {REPLACE_CROP_JSON};
-    document.getElementById('pollen-data').textContent = JSON.stringify(pollenData);
-    document.getElementById('crop-data').textContent   = JSON.stringify(cropData);
+  // Utilidades generales
+  function fetchXLSX(url){return fetch(url).then(r=>r.arrayBuffer()).then(buf=>XLSX.read(buf,{type:'array'}));}
+  function lineBasic(ctx, labels, series, label){
+    return new Chart(ctx,{type:'line',data:{labels,datasets:series.map(s=>({label:s.name,data:s.data,fill:false,tension:.25}))},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}});}
 
-    const yyEl=document.getElementById('yy'); if(yyEl) yyEl.textContent=new Date().getFullYear();
+  // 1) Serie histórica de cosecha (Andalucía vs España)
+  (async()=>{
+    try{
+      const wb = await fetchXLSX('data/Crop_Anuarios_JA.xlsx');
+      const ws = wb.Sheets[wb.SheetNames[0]]; // esperar hoja con columnas: Year, Spain, Andalusia
+      const rows = XLSX.utils.sheet_to_json(ws,{defval:null});
+      const labels = rows.map(r=>r.Year);
+      const es = rows.map(r=>r.Spain);
+      const and = rows.map(r=>r.Andalusia);
+      lineBasic(document.getElementById('cropSeries'),labels,[{name:'España (Tm)',data:es},{name:'Andalucía (Tm)',data:and}]);
+    }catch(e){console.error('Cosecha XLSX',e)}
+  })();
 
-    // === POLEN (semanal) ===
-    (function(){
-      const el = document.getElementById('chartPollen'); if(!el) return;
-      const d  = pollenData; const labels=d.labels.map(s=>new Date(s).toLocaleDateString('es-ES',{timeZone:'UTC'}));
-      new Chart(el,{type:'bar',data:{labels,datasets:[{label:'Olea (granos·m⁻³)',data:d.values}]},options:{responsive:true,plugins:{legend:{display:true}},scales:{x:{ticks:{maxRotation:0,minRotation:0}}}});
-    })();
-
-    // === CROP (Andalucía vs España) ===
-    (function(){
-      const el = document.getElementById('chartCrop'); if(!el) return;
-      const d  = cropData;
-      new Chart(el,{type:'line',data:{labels:d.years.map(String),datasets:[
-        {label:'Andalucía (t aceituna)',data:d.and},
-        {label:'España (t aceituna)',data:d.es}
-      ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},interaction:{mode:'index',intersect:false}}});
-    })();
+  // 3) Polen semanal Olea (promedios semanales)
+  (async()=>{
+    try{
+      const wb = await fetchXLSX('data/UCO_Pollen_OLEA_2425.xlsx');
+      const ws = wb.Sheets[wb.SheetNames[0]]; // esperar columnas: Week, Mean
+      const rows = XLSX.utils.sheet_to_json(ws,{defval:null});
+      const labels = rows.map(r=>r.Week);
+      const vals = rows.map(r=>r.Mean);
+      new Chart(document.getElementById('pollenWeekly'),{type:'bar',data:{labels,datasets:[{label:'Olea (granos m⁻³, media semanal)',data:vals}]},options:{scales:{x:{grid:{color:'#ecf0e6'}},y:{grid:{color:'#ecf0e6'}}}}});
+    }catch(e){console.error('Pollen XLSX',e)}
+  })();
   </script>
 </body>
 </html>
