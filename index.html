@@ -1,7 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PheMPOlive · Predicción temprana y sostenible de cosecha</title>
+
+<style>
+  :root{
+    --ink:#1a2433;
+    --muted:#5e6a52;
+    --brand:#405a34;
+    --brand-2:#6f8a3a;
+    --bg:#f3f6ef;
+    --card:#ffffff;
+    --border:#dfe8cf;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    line-height:1.6;
+  }
+
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:28px 16px;
+  }
+
+  h1,h2{line-height:1.25;margin:0 0 16px}
+  h3{margin:0 0 12px}
+  h1{font-size:clamp(1.6rem,2.4vw,2.1rem)}
+  h2{font-size:clamp(1.2rem,2.1vw,1.6rem)}
+  p{margin:0 0 12px}
+
+  .hero{
+    background:linear-gradient(180deg,#f8faf4,#eef3e5);
+    border-bottom:1px solid var(--border);
+  }
+
+  .hero-inner{
+    display:flex;
+    gap:24px;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .logo-main{height:88px}
+  .logo-uco{height:74px}
+  .logo-funders{height:62px}
+
+  .section{padding-block:28px}
+
+  .grid-2{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:24px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+  }
+
+  figure{margin:0}
+
+  figcaption{
+    font-size:.9rem;
+    color:var(--muted);
+    margin-top:6px;
+  }
+
+  a{color:var(--brand)}
+
+  .logos-inline{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:center;
+  }
+
+  .logos-inline img{height:40px}
+
+  .pillars{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 24px;
+    padding-left:18px;
+  }
+
+  .source{
+    font-size:.9rem;
+    color:var(--muted);
+  }
+
+  canvas{max-width:100%}
+
+  .skip-link{
+    position:absolute;
+    left:-999px;
+    top:0;
+    background:#fff;
+    padding:8px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+  }
+
+  .skip-link:focus{
+    left:12px;
+    top:12px;
+    z-index:100;
+  }
+
+  .top-nav{
+    position:sticky;
+    top:0;
+    background:#f8faf4eb;
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+    z-index:10;
+  }
+
+  .top-nav .container{padding-block:10px}
+
+  .top-nav ul{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+
+  .top-nav a{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    text-decoration:none;
+    font-size:.92rem;
+    background:#fff;
+    border:1px solid var(--border);
+  }
+
+  .top-nav a:hover,
+  .top-nav a:focus-visible{
+    outline:none;
+    background:#eaf2da;
+  }
+
+  .kpis{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+  }
+
+  .kpi{
+    padding:12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#f9fbf4;
+  }
+
+  .kpi small{
+    display:block;
+    color:var(--muted);
+  }
+
+  .kpi strong{
+    font-size:1.2rem;
+  }
+
+  .error-box{
+    background:#fff7f7;
+    border:1px solid #e7b4b4;
+    color:#6e1d1d;
+    border-radius:10px;
+    padding:10px;
+    margin-top:10px;
+    font-size:.92rem;
+    display:none;
+  }
+
+  :focus-visible{
+    outline:2px solid var(--brand-2);
+    outline-offset:2px;
+  }
+
+  @media (max-width:860px){
+    .hero-inner{flex-direction:column;gap:12px}
+    .logo-main{height:78px}
+    .logo-uco{height:64px}
+    .logo-funders{height:54px}
+    .kpis{grid-template-columns:1fr 1fr}
+    .pillars{grid-template-columns:1fr}
+    .grid-2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+
+<body>
+<a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <img src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
+    <img src="images/Logounicordoba.png" alt="Universidad de Córdoba" class="logo-uco"/>
+    <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
+  </div>
+</header>
+
+<nav class="top-nav" aria-label="Navegación de secciones">
+  <div class="container">
+    <ul>
+      <li><a href="#intro">Introducción</a></li>
+      <li><a href="#harvest-models">Cosecha</a></li>
+      <li><a href="#phenology">Fenología</a></li>
+      <li><a href="#pollen-weekly">Polen histórico</a></li>
+      <li><a href="#ebas">Tiempo real</a></li>
+      <li><a href="#pillars">Componentes</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="container" id="contenido-principal">
+
+  <section class="section" id="intro">
+    <h1>PheMPOlive (PID2023-152718OA-I00)</h1>
+    <p><strong>Modelización fenológica y automatización del muestreo polínico para una predicción temprana y sostenible de la producción de aceite de oliva.</strong></p>
+
+    <div class="grid-2">
+      <div>
+        <p><strong>Objetivo.</strong> Integrar <em>fenología</em>, <em>aerobiología</em>, <em>clima regionalizado</em> y <em>automatización</em> para anticipar la cosecha en cuatro escalas: almazara, provincia, Andalucía y España, con dos cortes de predicción: julio y noviembre.</p>
+        <p><strong>Razonamiento.</strong> El polen atmosférico resume la intensidad de floración a gran escala y, al acoplarse con el estado fenológico y los extremos climáticos, permite estimaciones robustas de rendimiento.</p>
+        <p><strong>Equipo UCO.</strong> IP: Jose Oteros. Miembros del equipo de investigación: Carmen Galán Soldevilla, Purificación Alcázar Teno. Equipo de trabajo: Carmen García Llamas, Moisés Martínez-Bracero, Rocío López-Orozco, Herminia García-Mozo, Aurora Holgado, Qasim Farooq, Sara Parras. Expertos de campo: Thalia Morales, María José Tenor Órtiz y Francisco Solano Bellido.</p>
+      </div>
+
+      <figure>
+        <img src="images/draft projecto.png" alt="Esquema del proyecto" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Diagrama general del proyecto. Paquetes de trabajo relacionados con fenología, aerobiología, clima, modelos, automatización y plataforma.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="harvest-models">
+    <h2>1) Modelos de predicción de cosecha</h2>
+
+    <div class="card" style="margin-bottom:12px">
+      <h3>Resumen rápido de indicadores</h3>
+
+      <div class="kpis" aria-live="polite">
+        <div class="kpi"><small>Último año disponible</small><strong id="kpiYear">—</strong></div>
+        <div class="kpi"><small>Andalucía (t aceituna)</small><strong id="kpiAnd">—</strong></div>
+        <div class="kpi"><small>España (t aceituna)</small><strong id="kpiEs">—</strong></div>
+        <div class="kpi"><small>Peso Andalucía / España</small><strong id="kpiShare">—</strong></div>
+      </div>
+
+      <div id="cropError" class="error-box"></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <p>Se implementa un <strong>ensamblado</strong> de métodos: regresión aditiva, Random Forest, SVM, redes neuronales y PLS, con tres familias de predictores: indicadores polínicos, ventanas meteorológicas críticas y estado fenológico regionalizado.</p>
+        <p>La relación entre polen y producción está documentada por el Grupo RNM-130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
+
+        <figure>
+          <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <figcaption>Arquitectura del sistema de predicción y fuentes de predictores.</figcaption>
+        </figure>
+      </div>
+
+      <figure>
+        <img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Distribución de gradientes de condiciones ambientales en las zonas de olivar nacional y de Andalucía.</figcaption>
+      </figure>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Serie histórica de producción (toneladas de aceituna) · Andalucía vs España</h3>
+      <canvas id="cropSeries" height="120"></canvas>
+      <p class="source">Fuente: archivo <code>data/Crop_Anuarios_JA.xlsx</code>. Columnas esperadas: <code>Year</code>, <code>Crop_And</code>, <code>Crop_Spain</code>.</p>
+    </div>
+  </section>
+
+  <section class="section" id="phenology">
+    <h2>2) Modelo fenológico</h2>
+
+    <div class="grid-2">
+      <div>
+        <p>Se emplea <strong>PhenoFlex</strong>, con acumulación de frío y calor y transición sigmoidal, y un banco comparativo de 21 métodos del paquete <em>phenoR</em> para seleccionar el mejor desempeño mediante MAE y RMSE.</p>
+        <p>La validación se realiza con series largas de la provincia de Córdoba y la regionalización sobre la superficie de olivar a 0.1°.</p>
+      </div>
+
+      <figure>
+        <img src="images/floracion.jpg" alt="Floración de olivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Fases BBCH durante la floración.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-2" style="margin-top:10px">
+      <figure>
+        <img src="images/feno de campo.png" alt="Seguimiento semanal de fenología" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Seguimiento semanal de fenología en olivares de Córdoba.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="images/Imagen6.gif" alt="Progresión espacial de fases" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Progresión espacial de fases.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="pollen-weekly">
+    <h2>3) Serie histórica mensual del índice de polinización</h2>
+
+    <p>Para proteger la confidencialidad de los datos históricos, se muestra un <strong>índice relativo mensual</strong> entre 0 y 100 en lugar de concentraciones absolutas. El 100% representa el mes histórico con mayor promedio provincial en toda la serie disponible.</p>
+
+    <div class="card">
+      <canvas id="pollenWeekly" height="120"></canvas>
+      <p class="source">Índice anonimizado para difusión pública. Archivo esperado: <code>data/polen_hist.xlsx</code>, con columnas <code>año</code>, <code>mes</code> e <code>indice_pct</code>.</p>
+      <div id="pollenError" class="error-box"></div>
+    </div>
+  </section>
+
+  <section class="section" id="ebas">
+    <h2>4) Datos de polen en tiempo real (EBAS) · <span style="color:var(--brand)">SYLVA</span></h2>
+
+    <div class="grid-2">
+      <div>
+        <p>Los datos en <strong>tiempo real</strong> proceden de <strong>SYLVA</strong>, que ha permitido la <strong>automatización del muestreo</strong> en el sur del Mediterráneo y la generación de librerías de entrenamiento para distintos dispositivos, incluyendo especies clave como el olivo.</p>
+        <p>Acceso mediante <a href="https://ebas-data.nilu.no/" target="_blank" rel="noopener">EBAS (NILU)</a>. Conjuntos de referencia: <a href="https://data.sylva.bioaerosol.eu/" target="_blank" rel="noopener">data.sylva.bioaerosol.eu</a>.</p>
+
+        <div class="logos-inline" style="margin-top:10px">
+          <img src="images/LogoEBAS.png" alt="EBAS"/>
+          <img src="images/SYLVA-sylva.png" alt="SYLVA"/>
+          <img src="images/EU_funded_horizontal_pos.svg" alt="Funded by the European Union"/>
+          <img src="images/SERI_funded_horizontal_pos.svg" alt="Supported by SERI Switzerland"/>
+        </div>
+      </div>
+
+      <figure>
+        <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Principales dispositivos automáticos empleados y validados en SYLVA.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="pillars">
+    <h2>5) Componentes del proyecto</h2>
+
+    <ol class="pillars">
+      <li><strong>Fenología</strong>: modelización PhenoFlex y comparación de métodos; regionalización sobre superficie de olivar.</li>
+      <li><strong>Aerobiología</strong>: parámetros de estación polínica, intensidad, duración, picos, umbrales y homogeneización con automáticos.</li>
+      <li><strong>Meteorología</strong>: clima regionalizado y extremos en ventanas críticas.</li>
+      <li><strong>Modelos de cosecha</strong>: ensamblado multi-modelo con predicciones en julio y noviembre.</li>
+      <li><strong>Automatización y plataforma</strong>: red automática, integración EBAS y portal de información para el sector.</li>
+    </ol>
+  </section>
+
+</main>
+
+<footer class="hero">
+  <div class="container" style="text-align:center">
+    <p><strong>PheMPOlive</strong> — Universidad de Córdoba · PID2023-152718OA-I00.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <script>
-/* ==========================================================
-   Utilidades generales
-   ========================================================== */
+document.addEventListener('DOMContentLoaded', init);
 
 function normalizeKey(key){
   return String(key)
@@ -59,23 +433,33 @@ function yearMonthLabel(year, month){
   return `${year}-${String(month).padStart(2,'0')}`;
 }
 
-/* ==========================================================
-   1) Producción de aceituna
-   Se lee SIEMPRE desde data/Crop_Anuarios_JA.xlsx
-   ========================================================== */
+function showError(id, message){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = message;
+  el.style.display = 'block';
+}
 
-async function loadCropFromXlsx(){
-  const response = await fetch('data/Crop_Anuarios_JA.xlsx', {cache:'no-store'});
+async function readExcel(path){
+  const response = await fetch(path, {cache:'no-store'});
 
   if(!response.ok){
-    throw new Error(`No se pudo leer data/Crop_Anuarios_JA.xlsx (${response.status})`);
+    throw new Error(`No se pudo leer ${path}. Código HTTP: ${response.status}`);
   }
 
   const buffer = await response.arrayBuffer();
-  const workbook = XLSX.read(buffer, {type:'array'});
+  return XLSX.read(buffer, {type:'array'});
+}
+
+async function loadCropFromXlsx(){
+  const workbook = await readExcel('data/Crop_Anuarios_JA.xlsx');
 
   const sheetName = workbook.SheetNames.includes('Crop') ? 'Crop' : workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
+
+  if(!sheet){
+    throw new Error('No se encontró ninguna hoja válida en Crop_Anuarios_JA.xlsx.');
+  }
 
   const rowsRaw = XLSX.utils.sheet_to_json(sheet, {
     raw:true,
@@ -109,38 +493,14 @@ async function loadCropFromXlsx(){
   };
 }
 
-function setKpis(crop){
-  const idx = crop.years.length - 1;
-
-  const year = crop.years[idx];
-  const andalucia = crop.and[idx];
-  const spain = crop.es[idx];
-  const share = spain ? (andalucia / spain) * 100 : NaN;
-
-  document.getElementById('kpiYear').textContent = year;
-  document.getElementById('kpiAnd').textContent = formatNumberES(andalucia);
-  document.getElementById('kpiEs').textContent = formatNumberES(spain);
-  document.getElementById('kpiShare').textContent = Number.isFinite(share) ? formatPctES(share) : '—';
-}
-
-/* ==========================================================
-   2) Polen histórico
-   Se lee desde data/polen_hist.xlsx
-   Estructura esperada:
-   año | mes | indice_pct
-   ========================================================== */
-
 async function loadPollenHistoricalFromXlsx(){
-  const response = await fetch('data/polen_hist.xlsx', {cache:'no-store'});
-
-  if(!response.ok){
-    throw new Error(`No se pudo leer data/polen_hist.xlsx (${response.status})`);
-  }
-
-  const buffer = await response.arrayBuffer();
-  const workbook = XLSX.read(buffer, {type:'array'});
+  const workbook = await readExcel('data/polen_hist.xlsx');
 
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+  if(!sheet){
+    throw new Error('No se encontró ninguna hoja válida en polen_hist.xlsx.');
+  }
 
   const rowsRaw = XLSX.utils.sheet_to_json(sheet, {
     raw:true,
@@ -203,19 +563,32 @@ async function loadPollenHistoricalFromXlsx(){
   };
 }
 
-/* ==========================================================
-   Render de gráficos
-   ========================================================== */
+function setKpis(crop){
+  const idx = crop.years.length - 1;
 
-let cropChart;
-let pollenChart;
+  const year = crop.years[idx];
+  const andalucia = crop.and[idx];
+  const spain = crop.es[idx];
+  const share = spain ? (andalucia / spain) * 100 : NaN;
+
+  document.getElementById('kpiYear').textContent = year;
+  document.getElementById('kpiAnd').textContent = formatNumberES(andalucia);
+  document.getElementById('kpiEs').textContent = formatNumberES(spain);
+  document.getElementById('kpiShare').textContent = Number.isFinite(share) ? formatPctES(share) : '—';
+}
+
+let cropChart = null;
+let pollenChart = null;
 
 function renderCropChart(crop){
+  const canvas = document.getElementById('cropSeries');
+  if(!canvas) return;
+
   if(cropChart){
     cropChart.destroy();
   }
 
-  cropChart = new Chart(document.getElementById('cropSeries'), {
+  cropChart = new Chart(canvas, {
     type: 'line',
     data: {
       labels: crop.years.map(String),
@@ -265,11 +638,14 @@ function renderCropChart(crop){
 }
 
 function renderPollenChart(series){
+  const canvas = document.getElementById('pollenWeekly');
+  if(!canvas) return;
+
   if(pollenChart){
     pollenChart.destroy();
   }
 
-  pollenChart = new Chart(document.getElementById('pollenWeekly'), {
+  pollenChart = new Chart(canvas, {
     type: 'line',
     data: {
       labels: series.labels,
@@ -319,10 +695,6 @@ function renderPollenChart(series){
   });
 }
 
-/* ==========================================================
-   Inicialización
-   ========================================================== */
-
 async function init(){
   try{
     const crop = await loadCropFromXlsx();
@@ -334,6 +706,7 @@ async function init(){
     document.getElementById('kpiAnd').textContent = '—';
     document.getElementById('kpiEs').textContent = '—';
     document.getElementById('kpiShare').textContent = '—';
+    showError('cropError', error.message);
   }
 
   try{
@@ -341,8 +714,10 @@ async function init(){
     renderPollenChart(pollen);
   }catch(error){
     console.error(error);
+    showError('pollenError', error.message);
   }
 }
-
-init();
 </script>
+
+</body>
+</html>
