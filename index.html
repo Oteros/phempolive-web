@@ -438,7 +438,6 @@
 
   <main class="container" id="contenido-principal">
 
-    <!-- 1. Introducción -->
     <section class="section" id="intro">
       <h1>PheMPOlive (PID2023-152718OA-I00)</h1>
       <p><strong>Modelización fenológica y automatización del muestreo polínico para una predicción temprana y sostenible de la producción de aceite de oliva.</strong></p>
@@ -474,7 +473,6 @@
       </div>
     </section>
 
-    <!-- 2. Cosecha -->
     <section class="section" id="harvest-models">
       <h2>2) Modelos de predicción de cosecha</h2>
 
@@ -516,7 +514,6 @@
       </div>
     </section>
 
-    <!-- 3. Fenología -->
     <section class="section" id="phenology">
       <h2>3) Modelo fenológico</h2>
 
@@ -548,7 +545,6 @@
       </div>
     </section>
 
-    <!-- 4. Polen histórico -->
     <section class="section" id="pollen-weekly">
       <h2>4) Índice mensual de polinización</h2>
 
@@ -564,7 +560,6 @@
       </div>
     </section>
 
-    <!-- 5. Tiempo real -->
     <section class="section" id="ebas">
       <h2>5) Datos de polen en tiempo real (EBAS) · <span style="color:var(--brand)">SYLVA</span></h2>
 
@@ -589,16 +584,15 @@
       </div>
     </section>
 
-    <!-- 6. Pollen Sense -->
     <section class="section" id="pollensense-live">
       <h2>6) Datos automáticos Pollen Sense</h2>
 
-      <p>Gráfico diario generado a partir de la API de <strong>Pollen Sense</strong>. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
+      <p>Gráfico diario generado a partir de la API de <strong>Pollen Sense</strong>. Se muestran todas las estaciones accesibles por la API key, con una línea por estación. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
 
       <div class="card">
         <div class="pollensense-summary">
           <div class="pollensense-chip">
-            <small>Sitio</small>
+            <small>Estaciones</small>
             <strong id="psSiteLabel">Cargando…</strong>
           </div>
           <div class="pollensense-chip">
@@ -621,7 +615,6 @@
       </div>
     </section>
 
-    <!-- 7. Transparencia -->
     <section class="section" id="transparency">
       <h2>7) Transparencia y financiación</h2>
 
@@ -652,7 +645,6 @@
       </div>
     </section>
 
-    <!-- 8. Resultados y difusión -->
     <section class="section" id="results">
       <h2>8) Resultados y difusión</h2>
 
@@ -758,15 +750,23 @@
     const POLLENSENSE_API_KEY = 'ldpE3duAB8UqoxEe5Wa8106mHsGLRXHJF5iU6vzA10JbJaaP4FcvJ7TgOoYkAtUxvN6qZmgGVz8ERYY8BeQmob';
     const POLLENSENSE_BASE = 'https://sensors.pollensense.com/api';
     const POLLENSENSE_DAYS = 30;
-    const POLLENSENSE_CATEGORY_QUERY = 'Olea';
+    const POLLENSENSE_COLORS = [
+      '#2f6f3e',
+      '#2f80ed',
+      '#c0392b',
+      '#8e44ad',
+      '#d68910',
+      '#117864',
+      '#6c3483',
+      '#a04000',
+      '#1f618d',
+      '#7d6608',
+      '#922b21',
+      '#196f3d'
+    ];
 
     function normalizeKey(key){
-      return String(key)
-        .trim()
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, '_');
+      return String(key).trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '_');
     }
 
     function normalizeRow(row){
@@ -791,25 +791,15 @@
       if(value === null || value === undefined || value === '') return NaN;
       if(typeof value === 'number') return value;
 
-      return Number(
-        String(value)
-          .trim()
-          .replace(/\./g, '')
-          .replace(',', '.')
-      );
+      return Number(String(value).trim().replace(/\./g, '').replace(',', '.'));
     }
 
     function formatNumberES(value){
-      return new Intl.NumberFormat('es-ES', {
-        maximumFractionDigits: 0
-      }).format(value);
+      return new Intl.NumberFormat('es-ES', {maximumFractionDigits: 0}).format(value);
     }
 
     function formatPctES(value){
-      return new Intl.NumberFormat('es-ES', {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-      }).format(value) + '%';
+      return new Intl.NumberFormat('es-ES', {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(value) + '%';
     }
 
     function yearMonthLabel(year, month){
@@ -843,7 +833,6 @@
 
     async function loadCropFromXlsx(){
       const workbook = await readExcel('data/Crop_Anuarios_JA.xlsx');
-
       const sheetName = workbook.SheetNames.includes('Crop') ? 'Crop' : workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
 
@@ -851,10 +840,7 @@
         throw new Error('No se encontró ninguna hoja válida en Crop_Anuarios_JA.xlsx.');
       }
 
-      const rowsRaw = XLSX.utils.sheet_to_json(sheet, {
-        raw:true,
-        defval:null
-      });
+      const rowsRaw = XLSX.utils.sheet_to_json(sheet, {raw:true, defval:null});
 
       const rows = rowsRaw
         .map(normalizeRow)
@@ -865,11 +851,7 @@
 
           return {year, cropAnd, cropSpain};
         })
-        .filter(row =>
-          Number.isFinite(row.year) &&
-          Number.isFinite(row.cropAnd) &&
-          Number.isFinite(row.cropSpain)
-        )
+        .filter(row => Number.isFinite(row.year) && Number.isFinite(row.cropAnd) && Number.isFinite(row.cropSpain))
         .sort((a,b) => a.year - b.year);
 
       if(!rows.length){
@@ -885,17 +867,13 @@
 
     async function loadPollenHistoricalFromXlsx(){
       const workbook = await readExcel('data/polen_hist.xlsx');
-
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
       if(!sheet){
         throw new Error('No se encontró ninguna hoja válida en polen_hist.xlsx.');
       }
 
-      const rowsRaw = XLSX.utils.sheet_to_json(sheet, {
-        raw:true,
-        defval:null
-      });
+      const rowsRaw = XLSX.utils.sheet_to_json(sheet, {raw:true, defval:null});
 
       const rows = rowsRaw
         .map(normalizeRow)
@@ -906,13 +884,7 @@
 
           return {year, month, index};
         })
-        .filter(row =>
-          Number.isFinite(row.year) &&
-          Number.isFinite(row.month) &&
-          row.month >= 1 &&
-          row.month <= 12 &&
-          Number.isFinite(row.index)
-        );
+        .filter(row => Number.isFinite(row.year) && Number.isFinite(row.month) && row.month >= 1 && row.month <= 12 && Number.isFinite(row.index));
 
       if(!rows.length){
         throw new Error('polen_hist.xlsx no contiene filas válidas con año, mes e indice_pct.');
@@ -924,11 +896,7 @@
         const key = `${row.year}-${String(row.month).padStart(2,'0')}`;
 
         if(!grouped.has(key)){
-          grouped.set(key, {
-            year: row.year,
-            month: row.month,
-            values: []
-          });
+          grouped.set(key, {year: row.year, month: row.month, values: []});
         }
 
         grouped.get(key).values.push(row.index);
@@ -955,7 +923,6 @@
 
     function setKpis(crop){
       const idx = crop.years.length - 1;
-
       const year = crop.years[idx];
       const andalucia = crop.and[idx];
       const spain = crop.es[idx];
@@ -1009,19 +976,12 @@
               }
             }
           },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
+          interaction: {mode: 'index', intersect: false},
           scales: {
-            x: {
-              grid: {color: '#ecf0e6'}
-            },
+            x: {grid: {color: '#ecf0e6'}},
             y: {
               grid: {color: '#ecf0e6'},
-              ticks: {
-                callback: value => formatNumberES(value)
-              }
+              ticks: {callback: value => formatNumberES(value)}
             }
           }
         }
@@ -1061,17 +1021,11 @@
               }
             }
           },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
+          interaction: {mode: 'index', intersect: false},
           scales: {
             x: {
               grid: {color: '#ecf0e6'},
-              ticks: {
-                maxTicksLimit: 18,
-                maxRotation: 60
-              }
+              ticks: {maxTicksLimit: 18, maxRotation: 60}
             },
             y: {
               min: 0,
@@ -1097,70 +1051,262 @@
     }
 
     async function pollenSenseFetch(path, params = {}){
-      const url = makePollenSenseUrl(path, params);
+      const finalUrl = makePollenSenseUrl(path, params);
 
-      const response = await fetch(url, {
+      const response = await fetch(finalUrl, {
         method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        },
+        headers: {'Accept': 'application/json'},
         cache: 'no-store'
       });
 
-      if(!response.ok){
-        let detail = '';
+      const text = await response.text();
 
-        try{
-          const err = await response.json();
-          detail = err.Detail || err.Title || err.detail || err.title || '';
-        }catch(e){}
-
-        throw new Error(`Error HTTP ${response.status}${detail ? ': ' + detail : ''}`);
+      let data;
+      try{
+        data = JSON.parse(text);
+      }catch(e){
+        data = text;
       }
 
-      return response.json();
+      if(!response.ok){
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(data).slice(0,500)}`);
+      }
+
+      return data;
+    }
+
+    function unwrapPollenSense(obj){
+      return obj?.Data ?? obj?.data ?? obj?.Payload ?? obj?.payload ?? obj?.Result ?? obj?.result ?? obj;
     }
 
     function normalizePollenSenseSites(json){
+      const root = unwrapPollenSense(json);
+
       const records =
-        Array.isArray(json) ? json :
-        Array.isArray(json.Sites) ? json.Sites :
-        Array.isArray(json.sites) ? json.sites :
-        Array.isArray(json.Data) ? json.Data :
-        Array.isArray(json.data) ? json.data :
-        Array.isArray(json.Results) ? json.Results :
-        Array.isArray(json.results) ? json.results :
-        Array.isArray(json.Items) ? json.Items :
-        Array.isArray(json.items) ? json.items :
+        Array.isArray(root) ? root :
+        Array.isArray(root.Sites) ? root.Sites :
+        Array.isArray(root.sites) ? root.sites :
+        Array.isArray(root.Items) ? root.Items :
+        Array.isArray(root.items) ? root.items :
+        Array.isArray(root.Results) ? root.Results :
+        Array.isArray(root.results) ? root.results :
         [];
 
       return records
         .map(site => {
-          const id =
-            site.SiteId ??
-            site.siteId ??
-            site.Id ??
-            site.id ??
-            site.SiteID ??
-            site.siteID;
-
-          const name =
-            site.Name ??
-            site.name ??
-            site.Description ??
-            site.description ??
-            site.Label ??
-            site.label ??
-            site.UsageType ??
-            site.usageType ??
-            '';
+          const id = site.SiteId ?? site.siteId ?? site.Id ?? site.id ?? site.SiteID ?? site.siteID;
+          const name = site.Name ?? site.name ?? site.Description ?? site.description ?? site.Label ?? site.label ?? site.UsageType ?? site.usageType ?? '';
 
           return {
-            id: id !== undefined && id !== null ? String(id) : '',
+            id: id === undefined || id === null ? '' : String(id),
             name: name ? String(name) : ''
           };
         })
         .filter(site => site.id);
+    }
+
+    function findPollenSenseMetricRoot(json){
+      const root = unwrapPollenSense(json);
+
+      if(root.Moments || root.moments || root.Layers || root.layers){
+        return root;
+      }
+
+      const candidates = [];
+
+      function walk(x, depth = 0){
+        if(depth > 4 || !x || typeof x !== 'object') return;
+
+        if((x.Moments || x.moments) && (x.CubicMeters || x.cubicMeters)){
+          candidates.push(x);
+        }
+
+        if(Array.isArray(x)){
+          for(const item of x) walk(item, depth + 1);
+        }else{
+          for(const value of Object.values(x)) walk(value, depth + 1);
+        }
+      }
+
+      walk(root);
+
+      return candidates.length ? candidates[0] : root;
+    }
+
+    function getPollenSenseLayers(root){
+      const layers = root.Layers ?? root.layers ?? root.LayerData ?? root.layerData ?? null;
+
+      if(Array.isArray(layers)) return layers;
+      if(layers && typeof layers === 'object') return [layers];
+
+      return [];
+    }
+
+    function getPollenSenseCounts(root){
+      const layers = getPollenSenseLayers(root);
+
+      if(layers.length){
+        return layers[0].Counts || layers[0].counts || {};
+      }
+
+      return root.Counts || root.counts || {};
+    }
+
+    function findPollenSenseOleaCode(metricJson){
+      const root = findPollenSenseMetricRoot(metricJson);
+      const categories = root.Categories || root.categories || {};
+      const counts = getPollenSenseCounts(root);
+
+      for(const [code, meta] of Object.entries(categories)){
+        const haystack = [
+          code,
+          meta.Description,
+          meta.description,
+          meta.CommonName,
+          meta.commonName,
+          meta.GroupCode,
+          meta.groupCode
+        ].filter(Boolean).join(' ').toLowerCase();
+
+        if(haystack.includes('olea') || haystack.includes('olive') || haystack.includes('olivo')){
+          return code;
+        }
+      }
+
+      for(const code of Object.keys(counts)){
+        if(String(code).toLowerCase().includes('olea')){
+          return code;
+        }
+      }
+
+      return null;
+    }
+
+    function buildPollenSenseSeries(metricJson, site){
+      const root = findPollenSenseMetricRoot(metricJson);
+
+      const moments = root.Moments || root.moments || [];
+      const cubicMeters = root.CubicMeters || root.cubicMeters || [];
+      const categories = root.Categories || root.categories || {};
+      const counts = getPollenSenseCounts(root);
+
+      if(!Array.isArray(moments) || !moments.length){
+        throw new Error('No hay Moments en la respuesta de Pollen Sense.');
+      }
+
+      if(!Array.isArray(cubicMeters) || !cubicMeters.length){
+        throw new Error('No hay CubicMeters en la respuesta de Pollen Sense.');
+      }
+
+      const oleaCode = findPollenSenseOleaCode(metricJson);
+
+      if(!oleaCode){
+        throw new Error('No se encontró Olea/olive/olivo.');
+      }
+
+      const oleaCounts = counts[oleaCode];
+
+      if(!Array.isArray(oleaCounts)){
+        throw new Error(`No hay Counts para el código ${oleaCode}.`);
+      }
+
+      const meta = categories[oleaCode] || {};
+      const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
+
+      const points = new Map();
+
+      for(let i = 0; i < moments.length; i++){
+        const volume = Number(cubicMeters[i]);
+        const count = Number(oleaCounts[i]);
+
+        if(!Number.isFinite(volume) || volume <= 0) continue;
+        if(!Number.isFinite(count)) continue;
+
+        const date = new Date(moments[i]);
+        const key = date.toISOString().slice(0,10);
+        points.set(key, count / volume);
+      }
+
+      if(!points.size){
+        throw new Error('La categoría Olea existe, pero no hay puntos válidos para graficar.');
+      }
+
+      return {
+        siteId: site.id,
+        siteLabel: site.name ? `${site.name} (${site.id})` : site.id,
+        categoryLabel,
+        points
+      };
+    }
+
+    function formatDateKeyES(dateKey){
+      const [year, month, day] = dateKey.split('-').map(Number);
+      return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('es-ES', {
+        day:'2-digit',
+        month:'2-digit'
+      });
+    }
+
+    function renderPollenSenseMultiChart(seriesList){
+      const canvas = document.getElementById('pollenSenseChart');
+      if(!canvas) return;
+
+      if(pollenSenseChart){
+        pollenSenseChart.destroy();
+      }
+
+      const allDateKeys = Array.from(
+        new Set(seriesList.flatMap(series => Array.from(series.points.keys())))
+      ).sort();
+
+      const labels = allDateKeys.map(formatDateKeyES);
+
+      const datasets = seriesList.map((series, index) => {
+        const color = POLLENSENSE_COLORS[index % POLLENSENSE_COLORS.length];
+
+        return {
+          label: series.siteLabel,
+          data: allDateKeys.map(key => {
+            const value = series.points.get(key);
+            return value === undefined ? null : Number(value.toFixed(2));
+          }),
+          borderColor: color,
+          backgroundColor: color,
+          tension: 0.25,
+          pointRadius: 3,
+          fill: false,
+          spanGaps: true
+        };
+      });
+
+      pollenSenseChart = new Chart(canvas, {
+        type: 'line',
+        data: {labels, datasets},
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {position: 'bottom'},
+            tooltip: {
+              callbacks: {
+                label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)} partículas/m³`
+              }
+            }
+          },
+          interaction: {mode: 'index', intersect: false},
+          scales: {
+            x: {
+              grid: {color: '#ecf0e6'},
+              ticks: {maxTicksLimit: 12, maxRotation: 60}
+            },
+            y: {
+              beginAtZero: true,
+              grid: {color: '#ecf0e6'},
+              title: {display: true, text: 'Partículas/m³'}
+            }
+          }
+        }
+      });
     }
 
     async function loadPollenSenseLive(){
@@ -1170,9 +1316,7 @@
 
       hideError('psError');
 
-      if(status){
-        status.textContent = 'Cargando sitios disponibles desde Pollen Sense…';
-      }
+      if(status) status.textContent = 'Cargando sitios disponibles desde Pollen Sense…';
 
       try{
         const sitesJson = await pollenSenseFetch('/sites');
@@ -1182,227 +1326,58 @@
           throw new Error('No se encontraron sitios accesibles para esta API key.');
         }
 
-        const site = sites[0];
-
-        if(siteLabel){
-          siteLabel.textContent = site.name ? `${site.name} (${site.id})` : site.id;
-        }
-
-        if(status){
-          status.textContent = 'Sitio detectado. Cargando métricas diarias…';
-        }
+        if(status) status.textContent = `Estaciones detectadas: ${sites.length}. Cargando métricas diarias…`;
 
         const ending = new Date();
         const starting = new Date(ending.getTime() - POLLENSENSE_DAYS * 24 * 60 * 60 * 1000);
 
-        const metricsJson = await pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
-          interval: 'day',
-          starting: starting.toISOString(),
-          ending: ending.toISOString()
-        });
+        const seriesList = [];
+        const failures = [];
 
-        const series = extractPollenSensePpm3Series(metricsJson, POLLENSENSE_CATEGORY_QUERY);
+        for(const site of sites){
+          try{
+            const metricJson = await pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
+              interval: 'day',
+              starting: starting.toISOString(),
+              ending: ending.toISOString()
+            });
 
-        if(categoryLabel){
-          categoryLabel.textContent = series.categoryLabel;
+            const series = buildPollenSenseSeries(metricJson, site);
+            seriesList.push(series);
+
+          }catch(error){
+            console.warn(`No se pudieron cargar datos del sitio ${site.id}:`, error);
+            failures.push(`${site.name || site.id}: ${error.message}`);
+          }
         }
 
-        renderPollenSenseChart(series);
+        if(!seriesList.length){
+          throw new Error(`Ninguna estación devolvió datos válidos. ${failures.slice(0,3).join(' | ')}`);
+        }
+
+        renderPollenSenseMultiChart(seriesList);
+
+        if(siteLabel){
+          siteLabel.textContent = `${seriesList.length} estación/es`;
+        }
+
+        if(categoryLabel){
+          categoryLabel.textContent = seriesList[0].categoryLabel;
+        }
 
         if(status){
-          status.textContent = `Datos diarios cargados correctamente. Registros: ${series.labels.length}.`;
+          const skipped = failures.length ? ` Estaciones sin datos válidos: ${failures.length}.` : '';
+          status.textContent = `Datos diarios cargados correctamente para ${seriesList.length} estación/es.${skipped}`;
         }
 
       }catch(error){
         console.error(error);
 
-        if(siteLabel){
-          siteLabel.textContent = 'No disponible';
-        }
+        if(siteLabel) siteLabel.textContent = 'No disponible';
+        if(status) status.textContent = 'No se pudieron cargar los datos de Pollen Sense.';
 
-        if(status){
-          status.textContent = 'No se pudieron cargar los datos de Pollen Sense.';
-        }
-
-        showError('psError', `${error.message}. Si el navegador muestra “Failed to fetch”, probablemente la API no permite llamadas directas desde GitHub Pages por CORS.`);
+        showError('psError', error.message);
       }
-    }
-
-    function extractPollenSensePpm3Series(json, categoryQuery){
-      const moments = json.Moments || json.moments || [];
-      const categories = json.Categories || json.categories || {};
-      const cubicMeters = json.CubicMeters || json.cubicMeters || [];
-
-      const layers = json.Layers || json.layers || [];
-      const layer = layers[0];
-
-      if(!layer){
-        throw new Error('La respuesta de Pollen Sense no contiene Layers.');
-      }
-
-      const counts = layer.Counts || layer.counts || {};
-      const categoryCode = findPollenSenseCategoryCode(categories, counts, categoryQuery);
-
-      if(!categoryCode){
-        const available = Object.entries(categories)
-          .map(([code, meta]) => `${code}: ${meta.CommonName || meta.commonName || meta.Description || meta.description || ''}`)
-          .slice(0, 20)
-          .join('; ');
-
-        throw new Error(`No se encontró la categoría "${categoryQuery}". Categorías disponibles: ${available || 'no disponibles'}`);
-      }
-
-      const categoryCounts = counts[categoryCode];
-
-      if(!Array.isArray(categoryCounts)){
-        throw new Error(`No hay recuentos para la categoría ${categoryCode}.`);
-      }
-
-      const categoryMeta = categories[categoryCode] || {};
-      const categoryLabel =
-        categoryMeta.CommonName ||
-        categoryMeta.commonName ||
-        categoryMeta.Description ||
-        categoryMeta.description ||
-        categoryCode;
-
-      const parsed = [];
-
-      for(let i = 0; i < moments.length; i++){
-        const moment = moments[i];
-        const volume = Number(cubicMeters[i]);
-        const count = Number(categoryCounts[i]);
-
-        if(!moment || !Number.isFinite(volume) || volume <= 0 || !Number.isFinite(count)){
-          continue;
-        }
-
-        parsed.push({
-          timestamp: new Date(moment),
-          ppm3: count / volume
-        });
-      }
-
-      parsed.sort((a,b) => a.timestamp - b.timestamp);
-
-      return {
-        categoryCode,
-        categoryLabel,
-        labels: parsed.map(row => formatPollenSenseDate(row.timestamp)),
-        values: parsed.map(row => Number(row.ppm3.toFixed(2)))
-      };
-    }
-
-    function findPollenSenseCategoryCode(categories, counts, categoryQuery){
-      const q = String(categoryQuery || '').trim().toLowerCase();
-
-      if(!q){
-        return null;
-      }
-
-      if(categories[q]){
-        return q;
-      }
-
-      const entries = Object.entries(categories);
-
-      for(const [code, meta] of entries){
-        if(String(code).toLowerCase() === q){
-          return code;
-        }
-
-        const description = String(meta.Description || meta.description || '').toLowerCase();
-        const commonName = String(meta.CommonName || meta.commonName || '').toLowerCase();
-        const groupCode = String(meta.GroupCode || meta.groupCode || '').toLowerCase();
-
-        if(description.includes(q) || commonName.includes(q) || groupCode.includes(q)){
-          return code;
-        }
-
-        if(
-          q === 'olea' &&
-          (
-            description.includes('olea') ||
-            description.includes('olive') ||
-            description.includes('olivo') ||
-            commonName.includes('olea') ||
-            commonName.includes('olive') ||
-            commonName.includes('olivo') ||
-            groupCode.includes('olea') ||
-            groupCode.includes('olive')
-          )
-        ){
-          return code;
-        }
-      }
-
-      const countCodes = Object.keys(counts || {});
-      return countCodes.find(code => String(code).toLowerCase() === q) || null;
-    }
-
-    function formatPollenSenseDate(date){
-      return new Intl.DateTimeFormat('es-ES', {
-        day:'2-digit',
-        month:'2-digit'
-      }).format(date);
-    }
-
-    function renderPollenSenseChart(series){
-      const canvas = document.getElementById('pollenSenseChart');
-      if(!canvas) return;
-
-      if(pollenSenseChart){
-        pollenSenseChart.destroy();
-      }
-
-      pollenSenseChart = new Chart(canvas, {
-        type: 'line',
-        data: {
-          labels: series.labels,
-          datasets: [
-            {
-              label: `${series.categoryLabel} · partículas/m³`,
-              data: series.values,
-              tension: 0.25,
-              pointRadius: 3,
-              fill: false
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: {position: 'bottom'},
-            tooltip: {
-              callbacks: {
-                label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)}`
-              }
-            }
-          },
-          interaction: {
-            mode: 'index',
-            intersect: false
-          },
-          scales: {
-            x: {
-              grid: {color: '#ecf0e6'},
-              ticks: {
-                maxTicksLimit: 12,
-                maxRotation: 60
-              }
-            },
-            y: {
-              beginAtZero: true,
-              grid: {color: '#ecf0e6'},
-              title: {
-                display: true,
-                text: 'Partículas/m³'
-              }
-            }
-          }
-        }
-      });
     }
 
     async function init(){
