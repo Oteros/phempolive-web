@@ -46,9 +46,6 @@
   .kpi{padding:12px;border-radius:12px;border:1px solid var(--border);background:#f9fbf4}
   .kpi small{display:block;color:var(--muted)}
   .kpi strong{font-size:1.2rem}
-  .crop-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
-  .btn{border:1px solid var(--border);background:#fff;padding:6px 10px;border-radius:999px;cursor:pointer;color:var(--ink)}
-  .status{font-size:.9rem;color:var(--muted)}
   :focus-visible{outline:2px solid var(--brand-2);outline-offset:2px}
   @media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.pillars{grid-template-columns:1fr}}
 </style>
@@ -103,11 +100,6 @@
           <div class="kpi"><small>Andalucía (t aceituna)</small><strong id="kpiAnd">—</strong></div>
           <div class="kpi"><small>España (t aceituna)</small><strong id="kpiEs">—</strong></div>
           <div class="kpi"><small>Peso Andalucía / España</small><strong id="kpiShare">—</strong></div>
-        </div>
-        <div class="crop-tools">
-          <button type="button" class="btn" id="loadCropFileBtn">Cargar Excel manualmente</button>
-          <input id="cropFileInput" type="file" accept=".xlsx,.xls" hidden>
-          <span class="status" id="cropDataStatus">Usando datos embebidos.</span>
         </div>
       </div>
       <div class="grid-2">
@@ -207,14 +199,13 @@
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <!-- Datos embebidos (extraídos de los Excel que compartiste) -->
   <script>
 /* =========================
    1) Producción de aceituna
    ========================= */
-let CROP = {
+const CROP = {
   years: [
     1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,
     2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,
@@ -354,67 +345,11 @@ function setKpis(){
   document.getElementById('kpiShare').textContent = `${share.toFixed(1)}%`;
 }
 
-function pickValue(row, aliases){
-  const normalized = Object.fromEntries(
-    Object.entries(row).map(([k,v])=>[
-      String(k).toLowerCase().replace(/[^a-z0-9]/g,''),
-      v
-    ])
-  );
-  for(const alias of aliases){
-    const key = alias.toLowerCase().replace(/[^a-z0-9]/g,'');
-    if(normalized[key] !== undefined && normalized[key] !== null && normalized[key] !== ''){
-      return normalized[key];
-    }
-  }
-  return null;
-}
-
-function parseCropRows(rows){
-  const parsed = rows
-    .map((row)=>({
-      year: Number(pickValue(row, ['Year','Año'])),
-      and: Number(pickValue(row, ['Crop_And','Crop And','Produccion_Andalucia'])),
-      es: Number(pickValue(row, ['Crop_Spain','Crop Spain','Produccion_Espana']))
-    }))
-    .filter((row)=>Number.isFinite(row.year) && Number.isFinite(row.and) && Number.isFinite(row.es))
-    .sort((a,b)=>a.year - b.year);
-
-  if(!parsed.length){
-    throw new Error('No hay filas válidas en el Excel para Year/Crop_And/Crop_Spain');
-  }
-
-  return {
-    years: parsed.map((row)=>row.year),
-    and: parsed.map((row)=>row.and),
-    es: parsed.map((row)=>row.es)
-  };
-}
-
-function parseCropWorkbook(buffer){
-  const workbook = XLSX.read(buffer, {type:'array'});
-  const preferred = workbook.SheetNames.find((name)=>/crop/i.test(name));
-  const sheet = workbook.Sheets[preferred || workbook.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(sheet, {raw:true, defval:null});
-  return parseCropRows(rows);
-}
-
-async function loadCropDataFromXlsx(){
-  const response = await fetch('data/Crop_Anuarios_JA.xlsx', {cache:'no-store'});
-  if(!response.ok){
-    throw new Error(`No se pudo leer el Excel (${response.status})`);
-  }
-  const buffer = await response.arrayBuffer();
-  return parseCropWorkbook(buffer);
-}
 </script>
 
   <!-- Render de gráficos (sin leer ficheros externos) -->
   <script>
     let cropChart;
-    const cropDataStatus = document.getElementById('cropDataStatus');
-    const cropFileInput = document.getElementById('cropFileInput');
-    const loadCropFileBtn = document.getElementById('loadCropFileBtn');
 
     function renderCropChart(){
       if(cropChart){ cropChart.destroy(); }
@@ -428,40 +363,8 @@ async function loadCropDataFromXlsx(){
       });
     }
 
-    function applyCropData(cropData, sourceLabel){
-      CROP = cropData;
-      setKpis();
-      renderCropChart();
-      cropDataStatus.textContent = `Datos cargados desde ${sourceLabel}.`;
-    }
-
     setKpis();
     renderCropChart();
-
-    loadCropDataFromXlsx()
-      .then((cropFromFile)=>{
-        applyCropData(cropFromFile, 'data/Crop_Anuarios_JA.xlsx');
-      })
-      .catch((error)=>{
-        console.warn('Se usan los datos embebidos de producción:', error.message);
-        cropDataStatus.textContent = 'No se pudo leer automáticamente el Excel. Usa “Cargar Excel manualmente”.';
-      });
-
-    loadCropFileBtn.addEventListener('click', ()=>cropFileInput.click());
-    cropFileInput.addEventListener('change', async (event)=>{
-      const file = event.target.files?.[0];
-      if(!file){ return; }
-      try{
-        const buffer = await file.arrayBuffer();
-        const cropData = parseCropWorkbook(buffer);
-        applyCropData(cropData, file.name);
-      }catch(error){
-        console.warn('Error al cargar Excel manual:', error.message);
-        cropDataStatus.textContent = 'Error leyendo el archivo seleccionado. Revisa columnas y formato.';
-      }finally{
-        cropFileInput.value = '';
-      }
-    });
 
     // Polen semanal (barras)
     new Chart(document.getElementById('pollenWeekly'),{
