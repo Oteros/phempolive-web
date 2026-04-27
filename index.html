@@ -15,6 +15,8 @@
     --card:#ffffff;
     --border:#dfe8cf;
     --soft:#f9fbf4;
+    --accent:#c86b1f;
+    --accent-dark:#9f4f10;
   }
 
   *{box-sizing:border-box}
@@ -51,6 +53,12 @@
     justify-content:space-between;
   }
 
+  .hero-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
   .logo-main{height:88px}
   .logo-uco{height:74px}
   .logo-funders{height:62px}
@@ -60,12 +68,6 @@
   .grid-2{
     display:grid;
     grid-template-columns:1.2fr 1fr;
-    gap:24px;
-  }
-
-  .grid-2-equal{
-    display:grid;
-    grid-template-columns:1fr 1fr;
     gap:24px;
   }
 
@@ -95,18 +97,42 @@
 
   .cta-link{
     display:inline-block;
-    margin-top:8px;
-    padding:10px 14px;
-    border-radius:10px;
-    background:#eaf2da;
-    border:1px solid var(--border);
+    margin-top:12px;
+    padding:14px 20px;
+    border-radius:999px;
+    background:var(--accent);
+    border:2px solid var(--accent-dark);
+    color:#fff;
     text-decoration:none;
-    font-weight:600;
+    font-weight:800;
+    font-size:1.05rem;
+    box-shadow:0 6px 16px rgba(0,0,0,.12);
   }
 
   .cta-link:hover,
   .cta-link:focus-visible{
-    background:#dfeccd;
+    background:var(--accent-dark);
+    color:#fff;
+  }
+
+  .header-cta{
+    display:inline-block;
+    padding:12px 18px;
+    border-radius:999px;
+    background:var(--accent);
+    border:2px solid var(--accent-dark);
+    color:#fff;
+    text-decoration:none;
+    font-weight:800;
+    font-size:.98rem;
+    white-space:nowrap;
+    box-shadow:0 6px 16px rgba(0,0,0,.12);
+  }
+
+  .header-cta:hover,
+  .header-cta:focus-visible{
+    background:var(--accent-dark);
+    color:#fff;
   }
 
   .logos-inline{
@@ -238,6 +264,11 @@
     color:var(--muted);
   }
 
+  .white-image{
+    background:#fff;
+    padding:8px;
+  }
+
   .error-box{
     background:#fff7f7;
     border:1px solid #e7b4b4;
@@ -256,10 +287,11 @@
 
   @media (max-width:860px){
     .hero-inner{flex-direction:column;gap:12px}
+    .hero-actions{order:4}
     .logo-main{height:78px}
     .logo-uco{height:64px}
     .logo-funders{height:54px}
-    .grid-2,.grid-2-equal{grid-template-columns:1fr}
+    .grid-2{grid-template-columns:1fr}
     .kpis{grid-template-columns:1fr 1fr}
     .mini-kpis{grid-template-columns:1fr}
     .pillars{grid-template-columns:1fr}
@@ -275,6 +307,12 @@
     <img src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
     <img src="images/Logounicordoba.png" alt="Universidad de Córdoba" class="logo-uco"/>
     <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
+
+    <div class="hero-actions">
+      <a class="header-cta" href="https://www.uco.es/botanica/es/investigacion/grupos-investigacion" target="_blank" rel="noopener">
+        Web del grupo
+      </a>
+    </div>
   </div>
 </header>
 
@@ -353,7 +391,7 @@
         <p>La relación entre polen y producción está documentada por el Grupo RNM-130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
 
         <figure>
-          <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" class="white-image" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Arquitectura del sistema de predicción y fuentes de predictores.</figcaption>
         </figure>
       </div>
@@ -390,7 +428,7 @@
 
     <div class="grid-2" style="margin-top:10px">
       <figure>
-        <img src="images/feno de campo.png" alt="Seguimiento semanal de fenología" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <img src="images/feno%20de%20campo.png" alt="Seguimiento semanal de fenología en olivares de Córdoba" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
         <figcaption>Seguimiento semanal de fenología en olivares de Córdoba.</figcaption>
       </figure>
 
@@ -411,13 +449,6 @@
       <canvas id="pollenWeekly" height="120"></canvas>
       <div id="pollenError" class="error-box"></div>
     </div>
-
-<div class="card" style="margin-top:16px">
-  <figure>
-    <img src="images/zonas_biogeograficas.gif" alt="Zonas biogeográficas del olivar" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
-    <figcaption>Zonas biogeográficas consideradas para el análisis del índice mensual de polinización del olivar.</figcaption>
-  </figure>
-</div>
   </section>
 
   <!-- 5. Tiempo real -->
@@ -461,16 +492,18 @@
       <div class="mini-kpi">
         <small>Importe concedido</small>
         <strong>200.000,00 €</strong>
-        <p class="note">160.000,00 € corresponden a costes directos y 40.000,00 € a costes indirectos.</p>
+        <p class="note">Sin el contrato predoctoral solicitado. El importe concedido se estructura en 160.000,00 € de costes directos y 40.000,00 € de costes indirectos.</p>
       </div>
     </div>
 
     <div class="card" style="margin-top:14px">
       <h3>Destino principal de los recursos</h3>
 
-      <p>Del presupuesto concedido, <strong>39.286,37 €</strong> se han destinado a la adquisición de <strong>cuatro dispositivos automáticos Pollen Sense</strong>, a lo que se suman <strong>15.000,00 €</strong> para su mantenimiento.</p>
+      <p>Del presupuesto concedido, <strong>39.286,37 €</strong> se han destinado a la adquisición de <strong>cuatro dispositivos automáticos Pollen Sense</strong>.</p>
 
       <p>El resto del presupuesto se ha destinado íntegramente a <strong>personal para realizar los muestreos y análisis</strong>. Como consecuencia de la reducción presupuestaria respecto a la propuesta inicial, se ha reducido <strong>un punto de muestreo</strong> de los cinco solicitados originalmente.</p>
+
+      <p>El total de los gastos en <strong>materiales fungibles, desplazamientos, gastos derivados de los muestreos de campo, viajes y difusión</strong> ha sido asumido mediante <strong>cofinanciación del grupo de investigación</strong>.</p>
     </div>
   </section>
 
@@ -826,3 +859,6 @@ async function init(){
   }
 }
 </script>
+
+</body>
+</html>
