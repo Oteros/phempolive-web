@@ -14,6 +14,7 @@
     --bg:#f3f6ef;
     --card:#ffffff;
     --border:#dfe8cf;
+    --soft:#f9fbf4;
   }
 
   *{box-sizing:border-box}
@@ -62,8 +63,21 @@
     gap:24px;
   }
 
+  .grid-2-equal{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+
   .card{
     background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+  }
+
+  .soft-card{
+    background:var(--soft);
     border:1px solid var(--border);
     border-radius:14px;
     padding:16px;
@@ -79,6 +93,22 @@
 
   a{color:var(--brand)}
 
+  .cta-link{
+    display:inline-block;
+    margin-top:8px;
+    padding:10px 14px;
+    border-radius:10px;
+    background:#eaf2da;
+    border:1px solid var(--border);
+    text-decoration:none;
+    font-weight:600;
+  }
+
+  .cta-link:hover,
+  .cta-link:focus-visible{
+    background:#dfeccd;
+  }
+
   .logos-inline{
     display:flex;
     flex-wrap:wrap;
@@ -87,13 +117,6 @@
   }
 
   .logos-inline img{height:40px}
-
-  .pillars{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px 24px;
-    padding-left:18px;
-  }
 
   .source{
     font-size:.9rem;
@@ -176,6 +199,45 @@
     font-size:1.2rem;
   }
 
+  .mini-kpis{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:10px;
+  }
+
+  .mini-kpi{
+    padding:16px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:#fff;
+  }
+
+  .mini-kpi small{
+    display:block;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+
+  .mini-kpi strong{
+    font-size:1.25rem;
+    display:block;
+    margin-bottom:8px;
+  }
+
+  .pillars{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 24px;
+    padding-left:18px;
+    margin:0;
+  }
+
+  .note{
+    font-size:.92rem;
+    color:var(--muted);
+  }
+
   .error-box{
     background:#fff7f7;
     border:1px solid #e7b4b4;
@@ -197,9 +259,10 @@
     .logo-main{height:78px}
     .logo-uco{height:64px}
     .logo-funders{height:54px}
+    .grid-2,.grid-2-equal{grid-template-columns:1fr}
     .kpis{grid-template-columns:1fr 1fr}
+    .mini-kpis{grid-template-columns:1fr}
     .pillars{grid-template-columns:1fr}
-    .grid-2{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -223,13 +286,14 @@
       <li><a href="#phenology">Fenología</a></li>
       <li><a href="#pollen-weekly">Polen histórico</a></li>
       <li><a href="#ebas">Tiempo real</a></li>
-      <li><a href="#pillars">Componentes</a></li>
+      <li><a href="#transparency">Transparencia</a></li>
     </ul>
   </div>
 </nav>
 
 <main class="container" id="contenido-principal">
 
+  <!-- 1. Introducción -->
   <section class="section" id="intro">
     <h1>PheMPOlive (PID2023-152718OA-I00)</h1>
     <p><strong>Modelización fenológica y automatización del muestreo polínico para una predicción temprana y sostenible de la producción de aceite de oliva.</strong></p>
@@ -237,8 +301,25 @@
     <div class="grid-2">
       <div>
         <p><strong>Objetivo.</strong> Integrar <em>fenología</em>, <em>aerobiología</em>, <em>clima regionalizado</em> y <em>automatización</em> para anticipar la cosecha en cuatro escalas: almazara, provincia, Andalucía y España, con dos cortes de predicción: julio y noviembre.</p>
+
         <p><strong>Razonamiento.</strong> El polen atmosférico resume la intensidad de floración a gran escala y, al acoplarse con el estado fenológico y los extremos climáticos, permite estimaciones robustas de rendimiento.</p>
-        <p><strong>Equipo UCO.</strong> IP: Jose Oteros. Miembros del equipo de investigación: Carmen Galán Soldevilla, Purificación Alcázar Teno. Equipo de trabajo: Carmen García Llamas, Moisés Martínez-Bracero, Rocío López-Orozco, Herminia García-Mozo, Aurora Holgado, Qasim Farooq, Sara Parras. Expertos de campo: Thalia Morales, María José Tenor Órtiz y Francisco Solano Bellido.</p>
+
+        <p><strong>Equipo UCO.</strong> IP: Jose Oteros. Miembros del equipo de investigación: Carmen Galán Soldevilla, Purificación Alcázar Teno. Equipo de trabajo: Carmen García Llamas, Moisés Martínez-Bracero, Rocío López-Orozco, Herminia García-Mozo, Aurora Holgado, Qasim Farooq, Sara Parras. <strong>Técnicos especialistas:</strong> Thalia Morales, María José Tenor Órtiz y Francisco Solano Bellido.</p>
+
+        <a class="cta-link" href="https://www.uco.es/botanica/es/investigacion/grupos-investigacion" target="_blank" rel="noopener">
+          Web del grupo de investigación
+        </a>
+
+        <div class="soft-card" style="margin-top:16px">
+          <h3>Componentes del proyecto</h3>
+          <ol class="pillars">
+            <li><strong>Fenología</strong>: modelización PhenoFlex y comparación de métodos; regionalización sobre superficie de olivar.</li>
+            <li><strong>Aerobiología</strong>: parámetros de estación polínica, intensidad, duración, picos, umbrales y homogeneización con automáticos.</li>
+            <li><strong>Meteorología</strong>: clima regionalizado y extremos en ventanas críticas.</li>
+            <li><strong>Modelos de cosecha</strong>: ensamblado multi-modelo con predicciones en julio y noviembre.</li>
+            <li><strong>Automatización y plataforma</strong>: red automática, integración EBAS y portal de información para el sector.</li>
+          </ol>
+        </div>
       </div>
 
       <figure>
@@ -248,8 +329,9 @@
     </div>
   </section>
 
+  <!-- 2. Cosecha -->
   <section class="section" id="harvest-models">
-    <h2>1) Modelos de predicción de cosecha</h2>
+    <h2>2) Modelos de predicción de cosecha</h2>
 
     <div class="card" style="margin-bottom:12px">
       <h3>Resumen rápido de indicadores</h3>
@@ -267,6 +349,7 @@
     <div class="grid-2">
       <div>
         <p>Se implementa un <strong>ensamblado</strong> de métodos: regresión aditiva, Random Forest, SVM, redes neuronales y PLS, con tres familias de predictores: indicadores polínicos, ventanas meteorológicas críticas y estado fenológico regionalizado.</p>
+
         <p>La relación entre polen y producción está documentada por el Grupo RNM-130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
 
         <figure>
@@ -284,22 +367,24 @@
     <div class="card" style="margin-top:12px">
       <h3>Serie histórica de producción (toneladas de aceituna) · Andalucía vs España</h3>
       <canvas id="cropSeries" height="120"></canvas>
-      <p class="source">Fuente: archivo <code>data/Crop_Anuarios_JA.xlsx</code>. Columnas esperadas: <code>Year</code>, <code>Crop_And</code>, <code>Crop_Spain</code>.</p>
+      <p class="source">Fuente: Anuarios de Estadística Agraria (Ministerio de Agricultura, Pesca y Alimentación) y Junta de Andalucía (Consejería de agricultura, pesca agua y desarrollo rural).</p>
     </div>
   </section>
 
+  <!-- 3. Fenología -->
   <section class="section" id="phenology">
-    <h2>2) Modelo fenológico</h2>
+    <h2>3) Modelo fenológico</h2>
 
     <div class="grid-2">
       <div>
         <p>Se emplea <strong>PhenoFlex</strong>, con acumulación de frío y calor y transición sigmoidal, y un banco comparativo de 21 métodos del paquete <em>phenoR</em> para seleccionar el mejor desempeño mediante MAE y RMSE.</p>
+
         <p>La validación se realiza con series largas de la provincia de Córdoba y la regionalización sobre la superficie de olivar a 0.1°.</p>
       </div>
 
       <figure>
         <img src="images/floracion.jpg" alt="Floración de olivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
-        <figcaption>Fases BBCH durante la floración.</figcaption>
+        <figcaption>Olivo en plena floración, fase BBCH 65.</figcaption>
       </figure>
     </div>
 
@@ -310,30 +395,39 @@
       </figure>
 
       <figure>
-        <img src="images/Imagen6.gif" alt="Progresión espacial de fases" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
-        <figcaption>Progresión espacial de fases.</figcaption>
+        <img src="images/phenc.jpg" alt="Regionalización fenológica del olivar" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+        <figcaption>Regionalización fenológica del olivar.</figcaption>
       </figure>
     </div>
   </section>
 
+  <!-- 4. Polen histórico -->
   <section class="section" id="pollen-weekly">
-    <h2>3) Serie histórica mensual del índice de polinización</h2>
+    <h2>4) Índice mensual de polinización</h2>
 
-    <p>Para proteger la confidencialidad de los datos históricos, se muestra un <strong>índice relativo mensual</strong> entre 0 y 100 en lugar de concentraciones absolutas. El 100% representa el mes histórico con mayor promedio provincial en toda la serie disponible.</p>
+    <p><strong>Índice relativo mensual entre 0 y 100 de concentraciones de polen en diferentes zonas biogeográficas del olivar.</strong></p>
 
     <div class="card">
       <canvas id="pollenWeekly" height="120"></canvas>
-      <p class="source">Índice anonimizado para difusión pública. Archivo esperado: <code>data/polen_hist.xlsx</code>, con columnas <code>año</code>, <code>mes</code> e <code>indice_pct</code>.</p>
       <div id="pollenError" class="error-box"></div>
     </div>
+
+<div class="card" style="margin-top:16px">
+  <figure>
+    <img src="images/zonas_biogeograficas.gif" alt="Zonas biogeográficas del olivar" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+    <figcaption>Zonas biogeográficas consideradas para el análisis del índice mensual de polinización del olivar.</figcaption>
+  </figure>
+</div>
   </section>
 
+  <!-- 5. Tiempo real -->
   <section class="section" id="ebas">
-    <h2>4) Datos de polen en tiempo real (EBAS) · <span style="color:var(--brand)">SYLVA</span></h2>
+    <h2>5) Datos de polen en tiempo real (EBAS) · <span style="color:var(--brand)">SYLVA</span></h2>
 
     <div class="grid-2">
       <div>
         <p>Los datos en <strong>tiempo real</strong> proceden de <strong>SYLVA</strong>, que ha permitido la <strong>automatización del muestreo</strong> en el sur del Mediterráneo y la generación de librerías de entrenamiento para distintos dispositivos, incluyendo especies clave como el olivo.</p>
+
         <p>Acceso mediante <a href="https://ebas-data.nilu.no/" target="_blank" rel="noopener">EBAS (NILU)</a>. Conjuntos de referencia: <a href="https://data.sylva.bioaerosol.eu/" target="_blank" rel="noopener">data.sylva.bioaerosol.eu</a>.</p>
 
         <div class="logos-inline" style="margin-top:10px">
@@ -351,16 +445,33 @@
     </div>
   </section>
 
-  <section class="section" id="pillars">
-    <h2>5) Componentes del proyecto</h2>
+  <!-- 6. Transparencia -->
+  <section class="section" id="transparency">
+    <h2>6) Transparencia y financiación</h2>
 
-    <ol class="pillars">
-      <li><strong>Fenología</strong>: modelización PhenoFlex y comparación de métodos; regionalización sobre superficie de olivar.</li>
-      <li><strong>Aerobiología</strong>: parámetros de estación polínica, intensidad, duración, picos, umbrales y homogeneización con automáticos.</li>
-      <li><strong>Meteorología</strong>: clima regionalizado y extremos en ventanas críticas.</li>
-      <li><strong>Modelos de cosecha</strong>: ensamblado multi-modelo con predicciones en julio y noviembre.</li>
-      <li><strong>Automatización y plataforma</strong>: red automática, integración EBAS y portal de información para el sector.</li>
-    </ol>
+    <p>Esta sección resume la financiación solicitada, la financiación finalmente concedida y el destino principal de los recursos del proyecto.</p>
+
+    <div class="mini-kpis">
+      <div class="mini-kpi">
+        <small>Importe solicitado</small>
+        <strong>273.040,00 €</strong>
+        <p class="note">Además, se solicitó 1 contrato predoctoral, estimado en aproximadamente 60.000,00 €.</p>
+      </div>
+
+      <div class="mini-kpi">
+        <small>Importe concedido</small>
+        <strong>200.000,00 €</strong>
+        <p class="note">160.000,00 € corresponden a costes directos y 40.000,00 € a costes indirectos.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Destino principal de los recursos</h3>
+
+      <p>Del presupuesto concedido, <strong>39.286,37 €</strong> se han destinado a la adquisición de <strong>cuatro dispositivos automáticos Pollen Sense</strong>, a lo que se suman <strong>15.000,00 €</strong> para su mantenimiento.</p>
+
+      <p>El resto del presupuesto se ha destinado íntegramente a <strong>personal para realizar los muestreos y análisis</strong>. Como consecuencia de la reducción presupuestaria respecto a la propuesta inicial, se ha reducido <strong>un punto de muestreo</strong> de los cinco solicitados originalmente.</p>
+    </div>
   </section>
 
 </main>
@@ -651,7 +762,7 @@ function renderPollenChart(series){
       labels: series.labels,
       datasets: [
         {
-          label: 'Índice mensual de polinización (% del máximo histórico)',
+          label: 'Índice mensual de polinización',
           data: series.values,
           tension: 0.25,
           pointRadius: 2,
@@ -666,7 +777,7 @@ function renderPollenChart(series){
         legend: {position: 'bottom'},
         tooltip: {
           callbacks: {
-            label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)}%`
+            label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)}`
           }
         }
       },
@@ -685,10 +796,7 @@ function renderPollenChart(series){
         y: {
           min: 0,
           max: 100,
-          grid: {color: '#ecf0e6'},
-          ticks: {
-            callback: value => `${value}%`
-          }
+          grid: {color: '#ecf0e6'}
         }
       }
     }
@@ -718,6 +826,3 @@ async function init(){
   }
 }
 </script>
-
-</body>
-</html>
