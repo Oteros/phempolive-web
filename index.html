@@ -10,9 +10,11 @@
     --ink:#1a2433; --muted:#5e6a52; --brand:#405a34; --brand-2:#6f8a3a;
     --bg:#f3f6ef; --card:#ffffff; --border:#dfe8cf;
   }
+  *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6}
   .container{max-width:1100px;margin:0 auto;padding:28px 16px}
   h1,h2{line-height:1.25;margin:0 0 16px}
+  h3{margin:0 0 12px}
   h1{font-size:clamp(1.6rem,2.4vw,2.1rem)}
   h2{font-size:clamp(1.2rem,2.1vw,1.6rem)}
   p{margin:0 0 12px}
@@ -33,9 +35,23 @@
   .pillars{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding-left:18px}
   .source{font-size:.9rem;color:var(--muted)}
   canvas{max-width:100%}
+  .skip-link{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid var(--border)}
+  .skip-link:focus{left:12px;top:12px;z-index:100}
+  .top-nav{position:sticky;top:0;background:#f8faf4eb;backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:10}
+  .top-nav .container{padding-block:10px}
+  .top-nav ul{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0;margin:0}
+  .top-nav a{display:inline-block;padding:6px 10px;border-radius:999px;text-decoration:none;font-size:.92rem;background:#fff;border:1px solid var(--border)}
+  .top-nav a:hover,.top-nav a:focus-visible{outline:none;background:#eaf2da}
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .kpi{padding:12px;border-radius:12px;border:1px solid var(--border);background:#f9fbf4}
+  .kpi small{display:block;color:var(--muted)}
+  .kpi strong{font-size:1.2rem}
+  :focus-visible{outline:2px solid var(--brand-2);outline-offset:2px}
+  @media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.pillars{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+  <a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
   <header class="hero">
     <div class="container hero-inner">
       <img src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
@@ -43,8 +59,20 @@
       <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
     </div>
   </header>
+  <nav class="top-nav" aria-label="Navegación de secciones">
+    <div class="container">
+      <ul>
+        <li><a href="#intro">Introducción</a></li>
+        <li><a href="#harvest-models">Cosecha</a></li>
+        <li><a href="#phenology">Fenología</a></li>
+        <li><a href="#pollen-weekly">Polen semanal</a></li>
+        <li><a href="#ebas">Tiempo real</a></li>
+        <li><a href="#pillars">Componentes</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <main class="container">
+  <main class="container" id="contenido-principal">
     <!-- Introducción -->
     <section class="section" id="intro">
       <h1>PheMPOlive (PID2023‑152718OA‑I00)</h1>
@@ -65,17 +93,26 @@
     <!-- 1. Modelos de predicción de cosecha -->
     <section class="section" id="harvest-models">
       <h2>1) Modelos de predicción de cosecha</h2>
+      <div class="card" style="margin-bottom:12px">
+        <h3>Resumen rápido de indicadores</h3>
+        <div class="kpis" aria-live="polite">
+          <div class="kpi"><small>Último año disponible</small><strong id="kpiYear">—</strong></div>
+          <div class="kpi"><small>Andalucía (t aceituna)</small><strong id="kpiAnd">—</strong></div>
+          <div class="kpi"><small>España (t aceituna)</small><strong id="kpiEs">—</strong></div>
+          <div class="kpi"><small>Peso Andalucía / España</small><strong id="kpiShare">—</strong></div>
+        </div>
+      </div>
       <div class="grid-2">
         <div>
           <p>Se implementa un <strong>ensamblado</strong> de métodos (regresión aditiva, Random Forest, SVM, redes neuronales y PLS) con tres familias de predictores: (a) <em>indicadores polínicos</em> (intensidad, umbrales, fechas de inicio/pico/fin), (b) <em>ventanas meteorológicas</em> críticas (agua y temperatura, especialmente en cuajado/lipogénesis) y (c) <em>estado fenológico</em> regionalizado.</p>
           <p>La relación entre polen y producción está documentada por el Grupo RNM‑130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
           <figure>
-            <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+            <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
             <figcaption>Arquitectura del sistema de predicción y fuentes de predictores.</figcaption>
           </figure>
         </div>
         <figure>
-          <img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Distribución de gradientes de condiciones ambientales en las zonas de olivar nacional y de Andalucía.</figcaption>
         </figure>
       </div>
@@ -95,17 +132,17 @@
           <p>La imagen de <em>floración</em> de <em>Olea europaea</em> sirve como referencia visual de las fases BBCH. El <strong>seguimiento semanal de fenología</strong> combina visitas de campo y material fotográfico estandarizado.</p>
         </div>
         <figure>
-          <img src="images/floracion.jpg" alt="Floración de olivo" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/floracion.jpg" alt="Floración de olivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Fases BBCH durante la floración.</figcaption>
         </figure>
       </div>
       <div class="grid-2" style="margin-top:10px">
         <figure>
-          <img src="images/feno de campo.png" alt="Seguimiento semanal de fenología" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/feno de campo.png" alt="Seguimiento semanal de fenología" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Seguimiento semanal de fenología en olivares de Córdoba.</figcaption>
         </figure>
         <figure>
-          <img src="images/Imagen6.gif" alt="Progresión espacial de fases" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/Imagen6.gif" alt="Progresión espacial de fases" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Progresión espacial de fases (animación).</figcaption>
         </figure>
       </div>
@@ -135,7 +172,7 @@
           </div>
         </div>
         <figure>
-          <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Principales dispositivos automáticos empleados/validados en SYLVA.</figcaption>
         </figure>
       </div>
@@ -290,10 +327,29 @@ const POLLEN_WITH_DATES = {
   labels: POLLEN.labels.map(isoWeekToDateStr),
   values: POLLEN.values
 };
+
+function formatNumberES(value){
+  return new Intl.NumberFormat('es-ES', {maximumFractionDigits: 0}).format(value);
+}
+
+function setKpis(){
+  const idx = CROP.years.length - 1;
+  const year = CROP.years[idx];
+  const andalucia = CROP.and[idx];
+  const spain = CROP.es[idx];
+  const share = (andalucia / spain) * 100;
+
+  document.getElementById('kpiYear').textContent = year;
+  document.getElementById('kpiAnd').textContent = formatNumberES(andalucia);
+  document.getElementById('kpiEs').textContent = formatNumberES(spain);
+  document.getElementById('kpiShare').textContent = `${share.toFixed(1)}%`;
+}
 </script>
 
   <!-- Render de gráficos (sin leer ficheros externos) -->
   <script>
+    setKpis();
+
     // Cosecha
     new Chart(document.getElementById('cropSeries'),{
       type:'line',
