@@ -154,7 +154,7 @@
       <p>Para proteger la confidencialidad de los datos históricos, se muestra un <strong>índice relativo mensual</strong> (0–100) en lugar de concentraciones absolutas. El 100% representa el mes histórico con mayor promedio provincial en toda la serie disponible.</p>
       <div class="card">
         <canvas id="pollenWeekly" height="120"></canvas>
-        <p class="source">Índice anonimizado para difusión pública (sin valores absolutos de polen por m³).</p>
+        <p class="source">Índice anonimizado para difusión pública (sin valores absolutos de polen por m³). Si existe <code>data/polen_hist.xlsx</code>, se calcula la media mensual del índice (%).</p>
       </div>
     </section>
 
@@ -199,6 +199,7 @@
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <!-- Datos embebidos (extraídos de los Excel que compartiste) -->
   <script>
@@ -236,6 +237,51 @@ const POLLEN_INDEX = {
   values: [0.1,0.0,0.0,51.5,100.0,27.3,0.0,0.0,0.4,0.3,0.1,0.3]
 };
 
+function monthLabel(month){
+  const labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return labels[month - 1];
+}
+
+async function loadPollenIndexFromXlsx(){
+  const response = await fetch('data/polen_hist.xlsx', {cache:'no-store'});
+  if(!response.ok){
+    throw new Error(`No se pudo leer data/polen_hist.xlsx (${response.status})`);
+  }
+  const buffer = await response.arrayBuffer();
+  const workbook = XLSX.read(buffer, {type:'array'});
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(sheet, {raw:true, defval:null});
+
+  const normalized = rows
+    .map((row)=>({
+      year: Number(row.year),
+      month: Number(row.mes),
+      index: Number(row.indice_pct)
+    }))
+    .filter((row)=>Number.isFinite(row.year) && Number.isFinite(row.month) && row.month >= 1 && row.month <= 12 && Number.isFinite(row.index));
+
+  if(!normalized.length){
+    throw new Error('polen_hist.xlsx no contiene filas válidas (year, mes, indice_pct).');
+  }
+
+  const byMonth = new Map();
+  for(const row of normalized){
+    const arr = byMonth.get(row.month) || [];
+    arr.push(row.index);
+    byMonth.set(row.month, arr);
+  }
+
+  const labels = [];
+  const values = [];
+  for(let m = 1; m <= 12; m++){
+    const arr = byMonth.get(m) || [];
+    labels.push(monthLabel(m));
+    values.push(arr.length ? Number((arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1)) : 0);
+  }
+
+  return {labels, values};
+}
+
 function formatNumberES(value){
   return new Intl.NumberFormat('es-ES', {maximumFractionDigits: 0}).format(value);
 }
@@ -258,6 +304,7 @@ function setKpis(){
   <!-- Render de gráficos (sin leer ficheros externos) -->
   <script>
     let cropChart;
+    let pollenChart;
 
     function renderCropChart(){
       if(cropChart){ cropChart.destroy(); }
@@ -274,12 +321,19 @@ function setKpis(){
     setKpis();
     renderCropChart();
 
-    // Polen semanal (barras)
-    new Chart(document.getElementById('pollenWeekly'),{
-      type:'bar',
-      data:{labels:POLLEN_INDEX.labels,datasets:[{label:'Índice de polinización (% del máximo histórico)',data:POLLEN_INDEX.values}]} ,
-      options:{responsive:true,scales:{x:{grid:{color:'#ecf0e6'}},y:{min:0,max:100,grid:{color:'#ecf0e6'}}}}
-    });
+    function renderPollenChart(series){
+      if(pollenChart){ pollenChart.destroy(); }
+      pollenChart = new Chart(document.getElementById('pollenWeekly'),{
+        type:'bar',
+        data:{labels:series.labels,datasets:[{label:'Índice de polinización (% del máximo histórico)',data:series.values}]} ,
+        options:{responsive:true,scales:{x:{grid:{color:'#ecf0e6'}},y:{min:0,max:100,grid:{color:'#ecf0e6'}}}}
+      });
+    }
+
+    renderPollenChart(POLLEN_INDEX);
+    loadPollenIndexFromXlsx()
+      .then((series)=>renderPollenChart(series))
+      .catch((error)=>console.warn('Usando índice de polen embebido:', error.message));
   </script>
 </body>
 </html>
