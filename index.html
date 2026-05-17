@@ -1187,6 +1187,33 @@ let pollenSenseHourlyChart = null;
       return null;
     }
 
+    function findPollenSenseFraxinusCode(metricJson){
+  const root = findPollenSenseMetricRoot(metricJson);
+  const categories = root.Categories || root.categories || {};
+  const counts = getPollenSenseCounts(root);
+
+  for(const [code, meta] of Object.entries(categories)){
+    const haystack = [
+      code,
+      meta.Description,
+      meta.description,
+      meta.CommonName,
+      meta.commonName
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    if(haystack.includes('fraxinus') || haystack.includes('fresno')){
+      return code;
+    }
+  }
+
+  for(const code of Object.keys(counts)){
+    if(String(code).toLowerCase().includes('fraxinus')){
+      return code;
+    }
+  }
+
+  return null;
+}
     function buildPollenSenseSeries(metricJson, site){
       const root = findPollenSenseMetricRoot(metricJson);
 
@@ -1475,16 +1502,18 @@ function buildPollenSenseHourlySeries(metricJson, site){
   }
 
   const oleaCode = findPollenSenseOleaCode(metricJson);
+  const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
 
-  if(!oleaCode){
-    throw new Error('No se encontró Olea/olive/olivo en datos horarios.');
-  }
+if(!oleaCode && !fraxinusCode){
+  throw new Error('No se encontró Olea ni Fraxinus en datos horarios.');
+}
 
-  const oleaCounts = counts[oleaCode];
+const oleaCounts = oleaCode ? counts[oleaCode] : null;
+const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
 
-  if(!Array.isArray(oleaCounts)){
-    throw new Error(`No hay Counts horarios para el código ${oleaCode}.`);
-  }
+if(!oleaCounts && !fraxinusCounts){
+  throw new Error('No hay Counts horarios para Olea ni Fraxinus.');
+}
 
   const meta = categories[oleaCode] || {};
   const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
@@ -1493,7 +1522,9 @@ function buildPollenSenseHourlySeries(metricJson, site){
 
   for(let i = 0; i < moments.length; i++){
     const volume = Number(cubicMeters[i]);
-    const count = Number(oleaCounts[i]);
+    const olea = oleaCounts ? Number(oleaCounts[i]) : 0;
+    const fraxinus = fraxinusCounts ? Number(fraxinusCounts[i]) : 0;
+    const count = olea + fraxinus;
 
     if(!Number.isFinite(volume) || volume <= 0) continue;
     if(!Number.isFinite(count)) continue;
