@@ -1231,16 +1231,18 @@ let pollenSenseHourlyChart = null;
       }
 
       const oleaCode = findPollenSenseOleaCode(metricJson);
+      const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
 
-      if(!oleaCode){
-        throw new Error('No se encontró Olea/olive/olivo.');
+      if(!oleaCode && !fraxinusCode){
+        throw new Error('No se encontró Olea ni Fraxinus.');
       }
 
-      const oleaCounts = counts[oleaCode];
+const oleaCounts = oleaCode ? counts[oleaCode] : null;
+const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
 
-      if(!Array.isArray(oleaCounts)){
-        throw new Error(`No hay Counts para el código ${oleaCode}.`);
-      }
+    if(!oleaCounts && !fraxinusCounts){
+        throw new Error('No hay Counts para Olea ni Fraxinus.');
+    }
 
       const meta = categories[oleaCode] || {};
       const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
@@ -1249,7 +1251,9 @@ let pollenSenseHourlyChart = null;
 
       for(let i = 0; i < moments.length; i++){
         const volume = Number(cubicMeters[i]);
-        const count = Number(oleaCounts[i]);
+        const olea = oleaCounts ? Number(oleaCounts[i]) : 0;
+        const fraxinus = fraxinusCounts ? Number(fraxinusCounts[i]) : 0;
+        const count = olea + fraxinus;
 
         if(!Number.isFinite(volume) || volume <= 0) continue;
         if(!Number.isFinite(count)) continue;
