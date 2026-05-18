@@ -198,21 +198,28 @@ const altData = [];
 
 for(let i=0;i<moments.length;i++){
 
-  const v = vol[i];
-  if(!v) continue;
+  const v = Number(vol[i]);
+
+  if(!v || isNaN(v)) continue;
 
   let totalFungi = 0;
 
   for(const code of fungusCodes){
-    if(counts[code] && counts[code][i] !== undefined){
-      totalFungi += Number(counts[code][i]);
+    if(counts[code]){
+      const val = Number(counts[code][i]);
+      if(!isNaN(val)) totalFungi += val;
     }
   }
 
-  moldData.push(totalFungi / v);
+  if(totalFungi > 0){
+    moldData.push(totalFungi / v);
+  }
 
-  if(counts[altCode] && counts[altCode][i] !== undefined){
-    altData.push(Number(counts[altCode][i]) / v);
+  if(counts[altCode]){
+    const val = Number(counts[altCode][i]);
+    if(!isNaN(val) && val > 0){
+      altData.push(val / v);
+    }
   }
 }
 
@@ -220,7 +227,10 @@ for(let i=0;i<moments.length;i++){
   datasetsFungi.push({
     label: s.Name,
     data: moldData,
-    borderWidth:1
+    borderWidth:2,
+fill:false,
+tension:0.2
+``
   });
 }
 
@@ -228,7 +238,10 @@ for(let i=0;i<moments.length;i++){
         datasetsAlt.push({
           label: s.Name,
           data: altData,
-          borderWidth:1
+          borderWidth:2,
+fill:false,
+tension:0.2
+``
         });
       }
 
