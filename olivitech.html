@@ -151,9 +151,9 @@ const BASE = "https://sensors.pollensense.com/api";
 
 function buildUrl(site){
   const end = new Date();
-  const start = new Date(end.getTime() - 3*24*3600*1000);
+  const start = new Date(end.getTime() - 30*24*3600*1000);
 
-  return `${BASE}/v2/sites/${encodeURIComponent(site)}/metrics?interval=hour&starting=${start.toISOString()}&ending=${end.toISOString()}&key=${API_KEY}`;
+  return `${BASE}/v2/sites/${encodeURIComponent(site)}/metrics?interval=day&starting=${start.toISOString()}&ending=${end.toISOString()}&key=${API_KEY}`;
 }
 
 function findTaxon(categories, pattern){
