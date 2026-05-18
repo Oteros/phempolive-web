@@ -235,16 +235,28 @@ for(let i=0;i<moments.length;i++){
     }catch(e){}
   }
 
-  new Chart(document.getElementById('fungiChart'),{
-    type:'line',
-    data:{datasets:datasetsFungi}
-  });
+  const labels = Array.from({length: datasetsFungi[0]?.data.length || 0}, (_, i) => i);
+
+new Chart(document.getElementById('fungiChart'),{
+  type:'line',
+  data:{
+    labels: labels,
+    datasets: datasetsFungi
+  }
+});
 
   if(datasetsAlt.length){
-    new Chart(document.getElementById('alternariaChart'),{
-      type:'line',
-      data:{datasets:datasetsAlt}
-    });
+  const labels2 = Array.from({length: datasetsAlt[0]?.data.length || 0}, (_, i) => i);
+
+  new Chart(document.getElementById('alternariaChart'),{
+    type:'line',
+    data:{
+      labels: labels2,
+      datasets: datasetsAlt
+    }
+  });
+}
+
   }
 }
 
