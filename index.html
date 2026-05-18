@@ -679,7 +679,8 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
       <p>
         Datos generados por captadores automáticos sobre concentración de granos de polen de olivo.
       </p>
-      <a class="cta-link" href="data/AutoPhe.csv" download        Descargar CSV
+      <a class="cta-link" href="data/AutoPhe.csv" download>
+      Descargar CSV
       </a>
     </div>
 
@@ -1323,8 +1324,7 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
         throw new Error('No hay Counts para Olea ni Fraxinus.');
     }
 
-      const meta = categories[oleaCode] || {};
-      const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
+      const categoryLabel = "Oleaceae";
 
       const points = new Map();
 
