@@ -255,6 +255,12 @@ spanGaps: true
   }
 
   const labels = Array.from({length: datasetsFungi[0]?.data.length || 0}, (_, i) => i);
+  
+if(datasetsFungi.length === 0){
+  console.error("NO HAY DATOS DE HONGOS");
+  return;
+}
+
 
   console.log("FUNGI DATA:", datasetsFungi);
 console.log("ALT DATA:", datasetsAlt);
@@ -266,6 +272,9 @@ new Chart(document.getElementById('fungiChart'),{
     datasets: datasetsFungi
   }
 });
+if(datasetsAlt.length === 0){
+  console.error("NO HAY DATOS DE ALTERNARIA");
+}
 
   if(datasetsAlt.length){
   const labels2 = Array.from({length: datasetsAlt[0]?.data.length || 0}, (_, i) => i);
