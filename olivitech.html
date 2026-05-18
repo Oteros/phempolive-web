@@ -91,12 +91,12 @@ canvas{
 <p><strong>Monitorización automática de esporas de hongos en tiempo real.</strong></p>
 
 <p>
-El proyecto GO OLIVITECH tiene como objetivo principal el diseño de un <strong>sistema de alerta temprana de enfermedades</strong> en olivar.
+El proyecto GO OLIVITECH tiene como objetivo principal el diseño de un <strong>sistema de alerta temprana de enfermedades provocadas por hongos aerovagantes</strong> en olivar.
 </p>
 
 <p>
-Como objetivo secundario del proyecto, se ha plantea el testeo de sistemas de <strong>detección automática de esporas de hongos</strong> mediante captadores automáticos.
-  En el proyecto se plantea que si estos sistemas son validados con éxito, se podrán incorporar con posterioridad a los modelos predictivos desarrollados en OLIVITECH.
+Como objetivo secundario del proyecto, se validarán sistemas de <strong>detección automática de esporas de hongos</strong> mediante captadores automáticos.
+  Si estos sistemas son validados con éxito, se podrán incorporar con posterioridad a los modelos predictivos desarrollados en OLIVITECH.
 </p>
 
 <p>
@@ -121,12 +121,12 @@ Vigo</strong>.
 </div>
 
 <div class="card">
-<h3>Esporas totales (Mold)</h3>
+<h3>Esporas de hongo</h3>
 <canvas id="fungiChart"></canvas>
 </div>
 
 <div class="card">
-<h3>Alternaria (si disponible)</h3>
+<h3>Alternaria</h3>
 <canvas id="alternariaChart"></canvas>
 </div>
 
@@ -185,8 +185,8 @@ async function loadData(){
       const counts = root.Layers[0].Counts;
       const categories = root.Categories;
 
-      const mold = findTaxon(categories,"mold") || findTaxon(categories,"spore");
-      const alt = findTaxon(categories,"alternaria");
+      const fungusCodes = ["ALTSP","ASCO","BOTSP","OOMY","POWMIL","RUSURE","SMUT"];
+const altCode = "ALTSP";
 
       if(!mold) continue;
 
@@ -194,25 +194,35 @@ async function loadData(){
       const vol = root.CubicMeters;
 
       const moldData = [];
-      const altData = [];
+const altData = [];
 
-      for(let i=0;i<moments.length;i++){
-        if(!vol[i]) continue;
+for(let i=0;i<moments.length;i++){
 
-        const v = vol[i];
+  const v = vol[i];
+  if(!v) continue;
 
-        moldData.push(counts[mold][i] / v);
+  let totalFungi = 0;
 
-        if(alt){
-          altData.push(counts[alt][i] / v);
-        }
-      }
+  for(const code of fungusCodes){
+    if(counts[code] && counts[code][i] !== undefined){
+      totalFungi += Number(counts[code][i]);
+    }
+  }
 
-      datasetsFungi.push({
-        label: s.Name,
-        data: moldData,
-        borderWidth:1
-      });
+  moldData.push(totalFungi / v);
+
+  if(counts[altCode] && counts[altCode][i] !== undefined){
+    altData.push(Number(counts[altCode][i]) / v);
+  }
+}
+
+      if(moldData.length > 0){
+  datasetsFungi.push({
+    label: s.Name,
+    data: moldData,
+    borderWidth:1
+  });
+}
 
       if(alt){
         datasetsAlt.push({
