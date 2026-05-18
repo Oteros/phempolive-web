@@ -200,7 +200,12 @@ for(let i=0;i<moments.length;i++){
 
   const v = Number(vol[i]);
 
-  if(!v || isNaN(v)) continue;
+  if(!v || isNaN(v)){
+  moldData.push(0);
+  altData.push(0);
+  continue;
+}
+
 
   let totalFungi = 0;
 
@@ -211,13 +216,11 @@ for(let i=0;i<moments.length;i++){
     }
   }
 
-  if(totalFungi > 0){
-    moldData.push(totalFungi / v);
-  }
+moldData.push(totalFungi / v);
 
   if(counts[altCode]){
     const val = Number(counts[altCode][i]);
-    if(!isNaN(val) && val > 0){
+    if(!isNaN(val)){
       altData.push(val / v);
     }
   }
@@ -249,6 +252,9 @@ tension:0.2
   }
 
   const labels = Array.from({length: datasetsFungi[0]?.data.length || 0}, (_, i) => i);
+
+  console.log("FUNGI DATA:", datasetsFungi);
+console.log("ALT DATA:", datasetsAlt);
 
 new Chart(document.getElementById('fungiChart'),{
   type:'line',
