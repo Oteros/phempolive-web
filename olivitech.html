@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>GO OLIVITECH · Monitorización de esporas</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui, Arial;
+  background:#f4f6f2;
+  color:#1a2433;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+/* HEADER */
+.hero{
+  background:white;
+  border-bottom:1px solid #ddd;
+  text-align:center;
+  padding:30px 10px;
+}
+
+.hero img{
+  height:90px;
+}
+
+/* TEXTO */
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  margin-bottom:20px;
+}
+
+/* GRÁFICO */
+canvas{
+  width:100% !important;
+  height:350px !important;
+}
+
+/* BOTÓN */
+.cta{
+  display:block;
+  text-align:center;
+  margin:30px auto;
+  padding:18px 26px;
+  max-width:400px;
+  border-radius:999px;
+  background:#6b3fa0;
+  color:white;
+  font-weight:800;
+  text-decoration:none;
+  font-size:1.2rem;
+}
+
+/* BANNER */
+.banner{
+  margin-top:40px;
+}
+
+.banner img{
+  width:100%;
+  border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hero">
+  <img src="images/olivitech.png" alt="GO OLIVITECH">
+</div>
+
+<div class="container">
+
+<div class="card">
+<h1>Proyecto GO OLIVITECH</h1>
+
+<p><strong>Monitorización automática de esporas de hongos en tiempo real.</strong></p>
+
+<p>
+El proyecto GO OLIVITECH tiene como objetivo principal el diseño de un 
+<strong>sistema de alerta temprana de enfermedades</strong> en olivar.
+</p>
+
+<p>
+Como parte secundaria del proyecto, se ha desarrollado un sistema piloto 
+para la <strong>detección automática de esporas de hongos</strong> mediante captadores automáticos.
+</p>
+
+<p>
+En esta página se muestran <strong>resultados preliminares</strong> de dichas mediciones 
+en diferentes puntos de muestreo de Andalucía y Galicia.
+</p>
+
+<p>
+Los nuevos puntos de muestreo podrán incorporarse progresivamente a esta plataforma 
+<strong>bajo solicitud de entidades interesadas</strong>.
+</p>
+
+<p style="margin-top:12px; padding:12px; background:#fff7e6; border:1px solid #f0d9a6; border-radius:10px;">
+⚠️ <strong>Nota importante:</strong>  
+Estos datos deben interpretarse como un <strong>resultado piloto</strong>.  
+Actualmente no se han obtenido conclusiones definitivas sobre la robustez 
+de las mediciones automáticas de esporas.  
+Esta herramienta se ofrece con fines <strong>divulgativos y exploratorios</strong>.
+</p>
+
+</div>
+
+<div class="card">
+<h3>Esporas totales (Mold)</h3>
+<canvas id="fungiChart"></canvas>
+</div>
+
+<div class="card">
+<h3>Alternaria (si disponible)</h3>
+<canvas id="alternariaChart"></canvas>
+</div>
+
+<a class="cta" href="https://olivitech.es/" target="_blank">
+Ir a la web oficial del proyecto GO OLIVITECH
+</a>
+
+<div class="banner">
+  <img src="images/baner.jpg" alt="Banner OLIVITECH">
+</div>
+
+</div>
+
+<script>
+
+const API_KEY = "TU_API_KEY";
+const BASE = "https://sensors.pollensense.com/api";
+
+function buildUrl(site){
+  const end = new Date();
+  const start = new Date(end.getTime() - 3*24*3600*1000);
+
+  return `${BASE}/v2/sites/${encodeURIComponent(site)}/metrics?interval=hour&starting=${start.toISOString()}&ending=${end.toISOString()}&key=${API_KEY}`;
+}
+
+function findTaxon(categories, pattern){
+  for(const k in categories){
+    const txt = (k + JSON.stringify(categories[k])).toLowerCase();
+    if(txt.includes(pattern)) return k;
+  }
+  return null;
+}
+
+async function loadData(){
+
+  const resSites = await fetch(`${BASE}/sites?key=${API_KEY}`);
+  const sites = await resSites.json();
+
+  const datasetsFungi = [];
+  const datasetsAlt = [];
+
+  for(const s of sites){
+    try{
+      const res = await fetch(buildUrl(s.SiteId));
+      if(!res.ok) continue;
+
+      const json = await res.json();
+      const root = json.Data || json;
+
+      if(!root.Layers || !root.Moments) continue;
+
+      const counts = root.Layers[0].Counts;
+      const categories = root.Categories;
+
+      const mold = findTaxon(categories,"mold") || findTaxon(categories,"spore");
+      const alt = findTaxon(categories,"alternaria");
+
+      if(!mold) continue;
+
+      const moments = root.Moments;
+      const vol = root.CubicMeters;
+
+      const moldData = [];
+      const altData = [];
+
+      for(let i=0;i<moments.length;i++){
+        if(!vol[i]) continue;
+
+        const v = vol[i];
+
+        moldData.push(counts[mold][i] / v);
+
+        if(alt){
+          altData.push(counts[alt][i] / v);
+        }
+      }
+
+      datasetsFungi.push({
+        label: s.Name,
+        data: moldData,
+        borderWidth:1
+      });
+
+      if(alt){
+        datasetsAlt.push({
+          label: s.Name,
+          data: altData,
+          borderWidth:1
+        });
+      }
+
+    }catch(e){}
+  }
+
+  new Chart(document.getElementById('fungiChart'),{
+    type:'line',
+    data:{datasets:datasetsFungi}
+  });
+
+  if(datasetsAlt.length){
+    new Chart(document.getElementById('alternariaChart'),{
+      type:'line',
+      data:{datasets:datasetsAlt}
+    });
+  }
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
