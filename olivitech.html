@@ -188,7 +188,7 @@ async function loadData(){
       const fungusCodes = ["ALTSP","ASCO","BOTSP","OOMY","POWMIL","RUSURE","SMUT"];
 const altCode = "ALTSP";
 
-      if(!mold) continue;
+ 
 
       const moments = root.Moments;
       const vol = root.CubicMeters;
@@ -224,7 +224,7 @@ for(let i=0;i<moments.length;i++){
   });
 }
 
-      if(alt){
+      if(altData.length > 0){
         datasetsAlt.push({
           label: s.Name,
           data: altData,
