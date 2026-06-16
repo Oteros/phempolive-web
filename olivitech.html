@@ -50,6 +50,17 @@ canvas{
   height:350px !important;
 }
 
+.chart-status{
+  margin-top:10px;
+  color:#56616f;
+  font-size:0.9rem;
+}
+
+.chart-status.error{
+  color:#9a3412;
+  font-weight:700;
+}
+
 /* BOTÓN */
 .cta{
   display:block;
@@ -114,7 +125,7 @@ Estos datos deben interpretarse como un <strong>resultado piloto</strong>.
 Actualmente no se han obtenido conclusiones definitivas sobre la robustez 
 de las mediciones automáticas de esporas.  
 Esta herramienta se ofrece con fines <strong>divulgativos y exploratorios</strong>.
-<strong>CONFINANCIACIÓN: La validación, interprestación y recuento de esporas fúngicas se lleva a cabo en el marco del GO OLIVITECH. Sin embargo los dispositivos automáticos se han aquirido financiados por otros fondos: en Andalucía se han financiado con el proyecto PhemPolive (PID2023-152718OA-I00) y en Galcia por la Universidad de 
+<strong>CONFINANCIACIÓN: La validación, interpretación y recuento de esporas fúngicas se lleva a cabo en el marco del GO OLIVITECH. Sin embargo, los dispositivos automáticos se han adquirido financiados por otros fondos: en Andalucía se han financiado con el proyecto PhemPolive (PID2023-152718OA-I00) y en Galicia por la Universidad de 
 Vigo</strong>.
 </p>
 
@@ -123,11 +134,13 @@ Vigo</strong>.
 <div class="card">
 <h3>Esporas de hongo</h3>
 <canvas id="fungiChart"></canvas>
+<p id="fungiStatus" class="chart-status">Cargando datos desde PollenSense...</p>
 </div>
 
 <div class="card">
 <h3>Alternaria</h3>
 <canvas id="alternariaChart"></canvas>
+<p id="alternariaStatus" class="chart-status">Cargando datos desde PollenSense...</p>
 </div>
 
   <p>
@@ -145,153 +158,274 @@ Ir a la web oficial del proyecto GO OLIVITECH
 </div>
 
 <script>
-
 const API_KEY = "Lstm55nkfDZqQh6gHet6OX6A6ouKBFFf4SJlLqn3q0Tfc3v0dAzbiGlu8kyWFrNlbyib6AvC5aUFU9LLAqx";
 const BASE = "https://sensors.pollensense.com/api";
+const DAYS_TO_SHOW = 30;
+const REFRESH_MS = 15 * 60 * 1000;
+
+let fungiChart = null;
+let alternariaChart = null;
 
 function buildUrl(site){
   const end = new Date();
-  const start = new Date(end.getTime() - 30*24*3600*1000);
+  const start = new Date(end.getTime() - DAYS_TO_SHOW * 24 * 3600 * 1000);
+  const params = new URLSearchParams({
+    interval: "day",
+    starting: start.toISOString(),
+    ending: end.toISOString(),
+    key: API_KEY,
+    _: Date.now().toString()
+  });
 
-  return `${BASE}/v2/sites/${encodeURIComponent(site)}/metrics?interval=day&starting=${start.toISOString()}&ending=${end.toISOString()}&key=${API_KEY}`;
+  return `${BASE}/v2/sites/${encodeURIComponent(site)}/metrics?${params.toString()}`;
 }
 
-function findTaxon(categories, pattern){
-  for(const k in categories){
-    const txt = (k + JSON.stringify(categories[k])).toLowerCase();
-    if(txt.includes(pattern)) return k;
+function safeNumber(value){
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+function toIsoDay(value){
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return String(value);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatAxisDate(value){
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
+}
+
+function formatTooltipDate(value){
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
+}
+
+function setStatus(id, message, isError = false){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = message;
+  el.classList.toggle("error", isError);
+}
+
+function findTaxonCode(categories, counts, pattern, fallback){
+  if(counts[fallback]) return fallback;
+
+  const lowerPattern = pattern.toLowerCase();
+  for(const code of Object.keys(counts)){
+    const categoryText = `${code} ${JSON.stringify(categories?.[code] || {})}`.toLowerCase();
+    if(categoryText.includes(lowerPattern)) return code;
   }
+
   return null;
 }
 
-async function loadData(){
+function buildSiteSeries(site, root){
+  const counts = root.Layers?.[0]?.Counts || {};
+  const categories = root.Categories || {};
+  const moments = root.Moments || [];
+  const volumes = root.CubicMeters || [];
+  const fungusCodes = Object.keys(counts);
+  const altCode = findTaxonCode(categories, counts, "alternaria", "ALTSP");
 
-  const resSites = await fetch(`${BASE}/sites?key=${API_KEY}`);
-  const sites = await resSites.json();
+  const fungiByDate = new Map();
+  const altByDate = new Map();
 
-  const datasetsFungi = [];
-  const datasetsAlt = [];
+  for(let i = 0; i < moments.length; i++){
+    const dateKey = toIsoDay(moments[i]);
+    const volume = safeNumber(volumes[i]);
 
-  for(const s of sites){
-    try{
-      const res = await fetch(buildUrl(s.SiteId));
-      if(!res.ok) continue;
-
-      const json = await res.json();
-      const root = json.Data || json;
-
-      if(!root.Layers || !root.Moments) continue;
-
-      const counts = root.Layers[0].Counts;
-      const categories = root.Categories;
-
-      const fungusCodes = Object.keys(counts);
-const altCode = "ALTSP";
-
- 
-
-      const moments = root.Moments;
-      const vol = root.CubicMeters;
-
-      const moldData = [];
-const altData = [];
-
-for(let i=0;i<moments.length;i++){
-
-  const v = Number(vol[i]);
-
-  if(!v || isNaN(v)){
-  moldData.push(0);
-  altData.push(0);
-  continue;
-}
-
-
-  let totalFungi = 0;
-
-  for(const code of fungusCodes){
-    if(counts[code]){
-      const val = Number(counts[code][i]);
-      if(!isNaN(val)) totalFungi += val;
+    if(!volume || volume <= 0){
+      fungiByDate.set(dateKey, null);
+      altByDate.set(dateKey, null);
+      continue;
     }
+
+    let totalFungi = 0;
+    for(const code of fungusCodes){
+      const value = safeNumber(counts[code]?.[i]);
+      if(value !== null) totalFungi += value;
+    }
+
+    const altValue = altCode ? safeNumber(counts[altCode]?.[i]) : null;
+
+    fungiByDate.set(dateKey, totalFungi / volume);
+    altByDate.set(dateKey, altValue !== null ? altValue / volume : null);
   }
 
-moldData.push(totalFungi / v);
-
- if(counts[altCode]){
-  const val = Number(counts[altCode][i]);
-  altData.push(!isNaN(val) ? val / v : 0);
-} else {
-  altData.push(0);
+  return {
+    name: site.Name || site.SiteId,
+    fungiByDate,
+    altByDate
+  };
 }
 
+function hasData(values){
+  return values.some(value => Number.isFinite(value));
 }
 
-      if(moldData.length > 0){
-  datasetsFungi.push({
-    label: s.Name,
-    data: moldData,
-    borderWidth:2,
-fill:false,
-tension:0.2,
-    pointRadius: 2,
-spanGaps: true
-  });
+function makeDatasets(siteSeries, labels, metric){
+  return siteSeries
+    .map(site => {
+      const source = metric === "alternaria" ? site.altByDate : site.fungiByDate;
+      const data = labels.map(date => source.has(date) ? source.get(date) : null);
+
+      return {
+        label: site.name,
+        data,
+        borderWidth: 2,
+        fill: false,
+        tension: 0.2,
+        pointRadius: 2,
+        spanGaps: true
+      };
+    })
+    .filter(dataset => hasData(dataset.data));
 }
 
-      if(altData.length > 0){
-        datasetsAlt.push({
-          label: s.Name,
-          data: altData,
-          borderWidth:2,
-fill:false,
-tension:0.2,
-          pointRadius: 2,
-spanGaps: true
-        });
+function renderChart(existingChart, canvasId, labels, datasets){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return null;
+  if(existingChart) existingChart.destroy();
+
+  return new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          position: "bottom"
+        },
+        tooltip: {
+          callbacks: {
+            title(items){
+              return items.length ? formatTooltipDate(items[0].label) : "";
+            },
+            label(context){
+              const value = context.parsed.y;
+              const formatted = Number.isFinite(value)
+                ? value.toLocaleString("es-ES", { maximumFractionDigits: 1 })
+                : "sin dato";
+              return `${context.dataset.label}: ${formatted} esporas/m³`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Fecha"
+          },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10,
+            maxRotation: 45,
+            callback(value){
+              return formatAxisDate(this.getLabelForValue(value));
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Esporas/m³"
+          },
+          ticks: {
+            callback(value){
+              return Number(value).toLocaleString("es-ES");
+            }
+          }
+        }
       }
-
-    }catch(e){}
-  }
-
-  const labels = Array.from({length: datasetsFungi[0]?.data.length || 0}, (_, i) => i);
-  
-if(datasetsFungi.length === 0){
-  console.error("NO HAY DATOS DE HONGOS");
-  return;
-}
-
-
-  console.log("FUNGI DATA:", datasetsFungi);
-console.log("ALT DATA:", datasetsAlt);
-
-new Chart(document.getElementById('fungiChart'),{
-  type:'line',
-  data:{
-    labels: labels,
-    datasets: datasetsFungi
-  }
-});
-if(datasetsAlt.length === 0){
-  console.error("NO HAY DATOS DE ALTERNARIA");
-}
-
-  if(datasetsAlt.length){
-  const labels2 = Array.from({length: datasetsAlt[0]?.data.length || 0}, (_, i) => i);
-
-  new Chart(document.getElementById('alternariaChart'),{
-    type:'line',
-    data:{
-      labels: labels2,
-      datasets: datasetsAlt
     }
   });
 }
 
-
+async function fetchSites(){
+  const response = await fetch(`${BASE}/sites?key=${API_KEY}&_=${Date.now()}`, { cache: "no-store" });
+  if(!response.ok) throw new Error(`Error al obtener estaciones: ${response.status}`);
+  return response.json();
 }
-loadData();
 
+async function fetchSiteData(site){
+  const response = await fetch(buildUrl(site.SiteId), { cache: "no-store" });
+  if(!response.ok) throw new Error(`Error al obtener datos de ${site.Name || site.SiteId}: ${response.status}`);
+  const json = await response.json();
+  const root = json.Data || json;
+
+  if(!root.Layers || !root.Moments){
+    throw new Error(`Respuesta sin datos válidos para ${site.Name || site.SiteId}`);
+  }
+
+  return buildSiteSeries(site, root);
+}
+
+async function loadData(){
+  setStatus("fungiStatus", "Actualizando datos desde PollenSense...");
+  setStatus("alternariaStatus", "Actualizando datos desde PollenSense...");
+
+  try{
+    const sites = await fetchSites();
+    const siteSeries = [];
+
+    for(const site of sites){
+      try{
+        siteSeries.push(await fetchSiteData(site));
+      }catch(error){
+        console.warn(error);
+      }
+    }
+
+    const labels = Array.from(new Set(
+      siteSeries.flatMap(site => [
+        ...site.fungiByDate.keys(),
+        ...site.altByDate.keys()
+      ])
+    )).sort();
+
+    if(labels.length === 0){
+      throw new Error("No hay fechas disponibles en la respuesta de la API.");
+    }
+
+    const fungiDatasets = makeDatasets(siteSeries, labels, "fungi");
+    const alternariaDatasets = makeDatasets(siteSeries, labels, "alternaria");
+
+    if(fungiDatasets.length === 0){
+      setStatus("fungiStatus", "No hay datos disponibles de esporas de hongo en el periodo mostrado.", true);
+    }else{
+      fungiChart = renderChart(fungiChart, "fungiChart", labels, fungiDatasets);
+      setStatus("fungiStatus", `Datos de ${fungiDatasets.length} estaciones. Última actualización: ${new Date().toLocaleString("es-ES")}.`);
+    }
+
+    if(alternariaDatasets.length === 0){
+      setStatus("alternariaStatus", "No hay datos disponibles de Alternaria en el periodo mostrado.", true);
+    }else{
+      alternariaChart = renderChart(alternariaChart, "alternariaChart", labels, alternariaDatasets);
+      setStatus("alternariaStatus", `Datos de ${alternariaDatasets.length} estaciones. Última actualización: ${new Date().toLocaleString("es-ES")}.`);
+    }
+  }catch(error){
+    console.error(error);
+    setStatus("fungiStatus", "No se han podido cargar los datos en tiempo real. Revisa la conexión con la API de PollenSense.", true);
+    setStatus("alternariaStatus", "No se han podido cargar los datos en tiempo real. Revisa la conexión con la API de PollenSense.", true);
+  }
+}
+
+loadData();
+setInterval(loadData, REFRESH_MS);
 </script>
 
 </body>
