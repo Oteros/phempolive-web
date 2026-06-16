@@ -1,4 +1,5 @@
 name: Install GoatCounter analytics
+# Installer workflow for GoatCounter analytics.
 
 on:
   workflow_dispatch:
