@@ -1,5 +1,6 @@
 name: Install GoatCounter analytics
 # Installer workflow for GoatCounter analytics.
+# Trigger 2026-06-17.
 
 on:
   workflow_dispatch:
