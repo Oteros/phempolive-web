@@ -1,0 +1,158 @@
+name: Install GoatCounter analytics
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/install-goatcounter.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install-goatcounter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add GoatCounter script and visits page
+        shell: python
+        run: |
+          from pathlib import Path
+
+          goat_script = '''  <!-- GoatCounter analytics: global Oteros counter -->
+  <script>
+    window.goatcounter = window.goatcounter || {};
+    window.goatcounter.path = function(path) {
+      return location.host + path;
+    };
+  </script>
+  <script data-goatcounter="https://oteros.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+'''
+
+          visits_html = '''<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Visitas web · PheMPOlive</title>
+  <style>
+    :root{
+      --ink:#1a2433;
+      --muted:#5e6a52;
+      --brand:#405a34;
+      --bg:#f3f6ef;
+      --card:#ffffff;
+      --border:#dfe8cf;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.6;
+    }
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px 16px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:18px;
+    }
+    h1{margin:0 0 10px;font-size:clamp(1.6rem,2.4vw,2.2rem)}
+    p{margin:0 0 10px}
+    a{color:var(--brand);font-weight:700}
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    .button{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--brand);
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+    }
+    .muted{color:var(--muted)}
+    iframe{
+      width:100%;
+      min-height:850px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+    }
+  </style>
+  <!-- GoatCounter analytics: global Oteros counter -->
+  <script>
+    window.goatcounter = window.goatcounter || {};
+    window.goatcounter.path = function(path) {
+      return location.host + path;
+    };
+  </script>
+  <script data-goatcounter="https://oteros.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Visitas de la web</h1>
+      <p>Panel de estadísticas de GoatCounter asociado a <strong>oteros.goatcounter.com</strong>.</p>
+      <p class="muted">El contador guarda la ruta incluyendo el dominio, por ejemplo <code>prediccionolivar.es/olivitech.html</code>, para poder distinguir varias webs dentro del mismo panel.</p>
+      <div class="actions">
+        <a class="button" href="https://oteros.goatcounter.com" target="_blank" rel="noopener">Abrir panel completo</a>
+        <a class="button" href="https://oteros.goatcounter.com/export" target="_blank" rel="noopener">Exportar datos</a>
+        <a href="index.html">Volver a la web principal</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <iframe src="https://oteros.goatcounter.com?hideui=1" title="Panel de estadísticas GoatCounter"></iframe>
+      <p class="muted">Si el panel no aparece, entra en GoatCounter y permite que esta web lo incruste en <strong>Settings → Sites that can embed GoatCounter</strong>.</p>
+    </section>
+  </main>
+</body>
+</html>
+'''
+
+          Path('visitas.html').write_text(visits_html, encoding='utf-8')
+
+          for html_path in Path('.').rglob('*.html'):
+            if '.git' in html_path.parts:
+              continue
+            text = html_path.read_text(encoding='utf-8')
+            if 'data-goatcounter="https://oteros.goatcounter.com/count"' in text:
+              continue
+            if '</head>' not in text:
+              print(f'Skipping {html_path}: no </head> tag found')
+              continue
+            text = text.replace('</head>', goat_script + '</head>', 1)
+            html_path.write_text(text, encoding='utf-8')
+            print(f'Updated {html_path}')
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "GoatCounter already installed."
+            exit 0
+          fi
+          git commit -m "Install GoatCounter analytics"
+          git push
