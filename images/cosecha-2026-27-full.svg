@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc">
+<title id="title">Cosecha de aceituna en Andalucía y horizonte 2026/27</title>
+<desc id="desc">Serie de cosechas observadas en millones de toneladas y banda gris orientativa en la zona alta para la campaña 2026/27, sin estimación puntual.</desc>
+<style>text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;fill:#52635a} .label{font-size:14px}.axis{font-size:14px}.heading{font-size:18px;font-weight:650;fill:#203b2e}</style>
+<rect width="100%" height="100%" fill="#fcfcf8" rx="16"/>
+<text x="24" y="28" class="heading">Andalucía · Aceituna fruto</text>
+<text x="24" y="50" class="label">Millones de toneladas</text>
+<rect x="806" y="60" width="144" height="362" rx="14" fill="#eeefea"/>
+<path d="M 58 412.00 H 942" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="417.00" text-anchor="end" class="axis">0</text>
+<path d="M 58 326.50 H 942" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="331.50" text-anchor="end" class="axis">2</text>
+<path d="M 58 241.00 H 942" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="246.00" text-anchor="end" class="axis">4</text>
+<path d="M 58 155.50 H 942" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="160.50" text-anchor="end" class="axis">6</text>
+<path d="M 58 70.00 H 942" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="75.00" text-anchor="end" class="axis">8</text>
+<polyline points="58.00,310.02 74.74,371.83 91.49,297.28 108.23,352.79 124.98,330.17 141.72,287.82 158.47,339.12 175.21,326.25 191.95,295.33 208.70,321.83 225.44,306.94 242.19,329.87 258.93,316.45 275.67,364.73 292.42,256.87 309.16,222.45 325.91,268.44 342.65,319.70 359.40,235.52 376.14,183.43 392.88,272.24 409.63,160.76 426.37,243.93 443.12,292.13 459.86,222.61 476.60,209.90 493.35,238.26 510.09,179.43 526.84,176.81 543.58,147.75 560.33,301.69 577.07,98.95 593.81,272.28 610.56,179.35 627.30,186.49 644.05,219.47 660.79,95.68 677.53,230.56 694.28,151.29 711.02,165.42 727.77,297.62 744.51,280.33 761.26,147.58 778.00,182.34" fill="none" stroke="#2b6a4b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="58.00" cy="310.02" r="3" fill="#2b6a4b"><title>1982/1983: 2.39 millones de toneladas observadas</title></circle>
+<circle cx="74.74" cy="371.83" r="3" fill="#2b6a4b"><title>1983/1984: 0.94 millones de toneladas observadas</title></circle>
+<circle cx="91.49" cy="297.28" r="3" fill="#2b6a4b"><title>1984/1985: 2.68 millones de toneladas observadas</title></circle>
+<circle cx="108.23" cy="352.79" r="3" fill="#2b6a4b"><title>1985/1986: 1.39 millones de toneladas observadas</title></circle>
+<circle cx="124.98" cy="330.17" r="3" fill="#2b6a4b"><title>1986/1987: 1.91 millones de toneladas observadas</title></circle>
+<circle cx="141.72" cy="287.82" r="3" fill="#2b6a4b"><title>1987/1988: 2.90 millones de toneladas observadas</title></circle>
+<circle cx="158.47" cy="339.12" r="3" fill="#2b6a4b"><title>1988/1989: 1.70 millones de toneladas observadas</title></circle>
+<circle cx="175.21" cy="326.25" r="3" fill="#2b6a4b"><title>1989/1990: 2.01 millones de toneladas observadas</title></circle>
+<circle cx="191.95" cy="295.33" r="3" fill="#2b6a4b"><title>1990/1991: 2.73 millones de toneladas observadas</title></circle>
+<circle cx="208.70" cy="321.83" r="3" fill="#2b6a4b"><title>1993/1992: 2.11 millones de toneladas observadas</title></circle>
+<circle cx="225.44" cy="306.94" r="3" fill="#2b6a4b"><title>1992/1993: 2.46 millones de toneladas observadas</title></circle>
+<circle cx="242.19" cy="329.87" r="3" fill="#2b6a4b"><title>1993/1994: 1.92 millones de toneladas observadas</title></circle>
+<circle cx="258.93" cy="316.45" r="3" fill="#2b6a4b"><title>1994/1995: 2.24 millones de toneladas observadas</title></circle>
+<circle cx="275.67" cy="364.73" r="3" fill="#2b6a4b"><title>1995/1996: 1.11 millones de toneladas observadas</title></circle>
+<circle cx="292.42" cy="256.87" r="3" fill="#2b6a4b"><title>1996/1997: 3.63 millones de toneladas observadas</title></circle>
+<circle cx="309.16" cy="222.45" r="3" fill="#2b6a4b"><title>1997/1998: 4.43 millones de toneladas observadas</title></circle>
+<circle cx="325.91" cy="268.44" r="3" fill="#2b6a4b"><title>1998/1999: 3.36 millones de toneladas observadas</title></circle>
+<circle cx="342.65" cy="319.70" r="3" fill="#2b6a4b"><title>1999/2000: 2.16 millones de toneladas observadas</title></circle>
+<circle cx="359.40" cy="235.52" r="3" fill="#2b6a4b"><title>2000/2001: 4.13 millones de toneladas observadas</title></circle>
+<circle cx="376.14" cy="183.43" r="3" fill="#2b6a4b"><title>2001/2002: 5.35 millones de toneladas observadas</title></circle>
+<circle cx="392.88" cy="272.24" r="3" fill="#2b6a4b"><title>2002/2003: 3.27 millones de toneladas observadas</title></circle>
+<circle cx="409.63" cy="160.76" r="3" fill="#2b6a4b"><title>2003/2004: 5.88 millones de toneladas observadas</title></circle>
+<circle cx="426.37" cy="243.93" r="3" fill="#2b6a4b"><title>2004/2005: 3.93 millones de toneladas observadas</title></circle>
+<circle cx="443.12" cy="292.13" r="3" fill="#2b6a4b"><title>2005/2006: 2.80 millones de toneladas observadas</title></circle>
+<circle cx="459.86" cy="222.61" r="3" fill="#2b6a4b"><title>2006/2007: 4.43 millones de toneladas observadas</title></circle>
+<circle cx="476.60" cy="209.90" r="3" fill="#2b6a4b"><title>2007/2008: 4.73 millones de toneladas observadas</title></circle>
+<circle cx="493.35" cy="238.26" r="3" fill="#2b6a4b"><title>2008/2009: 4.06 millones de toneladas observadas</title></circle>
+<circle cx="510.09" cy="179.43" r="3" fill="#2b6a4b"><title>2009/2010: 5.44 millones de toneladas observadas</title></circle>
+<circle cx="526.84" cy="176.81" r="3" fill="#2b6a4b"><title>2010/2011: 5.50 millones de toneladas observadas</title></circle>
+<circle cx="543.58" cy="147.75" r="3" fill="#2b6a4b"><title>2011/2012: 6.18 millones de toneladas observadas</title></circle>
+<circle cx="560.33" cy="301.69" r="3" fill="#2b6a4b"><title>2012/2013: 2.58 millones de toneladas observadas</title></circle>
+<circle cx="577.07" cy="98.95" r="3" fill="#2b6a4b"><title>2013/2014: 7.32 millones de toneladas observadas</title></circle>
+<circle cx="593.81" cy="272.28" r="3" fill="#2b6a4b"><title>2014/2015: 3.27 millones de toneladas observadas</title></circle>
+<circle cx="610.56" cy="179.35" r="3" fill="#2b6a4b"><title>2015/2016: 5.44 millones de toneladas observadas</title></circle>
+<circle cx="627.30" cy="186.49" r="3" fill="#2b6a4b"><title>2016/2017: 5.28 millones de toneladas observadas</title></circle>
+<circle cx="644.05" cy="219.47" r="3" fill="#2b6a4b"><title>2017/2018: 4.50 millones de toneladas observadas</title></circle>
+<circle cx="660.79" cy="95.68" r="3" fill="#2b6a4b"><title>2018/2019: 7.40 millones de toneladas observadas</title></circle>
+<circle cx="677.53" cy="230.56" r="3" fill="#2b6a4b"><title>2019/2020: 4.24 millones de toneladas observadas</title></circle>
+<circle cx="694.28" cy="151.29" r="3" fill="#2b6a4b"><title>2020/2021: 6.10 millones de toneladas observadas</title></circle>
+<circle cx="711.02" cy="165.42" r="3" fill="#2b6a4b"><title>2021/2022: 5.77 millones de toneladas observadas</title></circle>
+<circle cx="727.77" cy="297.62" r="3" fill="#2b6a4b"><title>2022/2023: 2.68 millones de toneladas observadas</title></circle>
+<circle cx="744.51" cy="280.33" r="3" fill="#2b6a4b"><title>2023/2024: 3.08 millones de toneladas observadas</title></circle>
+<circle cx="761.26" cy="147.58" r="3" fill="#2b6a4b"><title>2024/2025: 6.19 millones de toneladas observadas</title></circle>
+<circle cx="778.00" cy="182.34" r="3" fill="#2b6a4b"><title>2025/2026: 5.37 millones de toneladas observadas</title></circle>
+<text x="58.00" y="441" text-anchor="middle" class="axis">1982/83</text>
+<text x="191.95" y="441" text-anchor="middle" class="axis">1990/91</text>
+<text x="325.91" y="441" text-anchor="middle" class="axis">1998/99</text>
+<text x="459.86" y="441" text-anchor="middle" class="axis">2006/07</text>
+<text x="593.81" y="441" text-anchor="middle" class="axis">2014/15</text>
+<text x="778.00" y="441" text-anchor="middle" class="axis">2025/26</text>
+<path d="M 806 60 V 422" stroke="#aeb9ac" stroke-dasharray="4 5"/>
+<rect x="844.0" y="134.12" width="68" height="32.06" rx="6" fill="#a9aea7" stroke="#7c877d" stroke-width="1.5"/>
+<text x="878.0" y="118.12" text-anchor="middle" class="label" style="font-weight:600;fill:#435342">Franja alta</text>
+<text x="878.0" y="441" text-anchor="middle" class="axis" style="font-weight:700;fill:#203b2e">2026/27</text>
+<text x="480.0" y="467" text-anchor="middle" class="label">Campaña</text>
+</svg>
