@@ -452,6 +452,7 @@
         <li><a href="#open-data">Open Data</a></li>
         <li><a href="#transparency">Transparencia</a></li>
         <li><a href="#results">Resultados</a></li>
+        <li><a href="#crop-forecast">Predicción de cosecha</a></li>
         <li><a href="olivitech.html" class="nav-olivitech">OLIVITECH</a></li>
       </ul>
     </div>
@@ -644,7 +645,7 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
     <section class="section" id="pollensense-live">
       <h2>6) Datos automáticos Pollen Sense</h2>
 
-      <p>Gráfico diario generado a partir de la API de <strong>Pollen Sense</strong>. Se muestran todas las estaciones accesibles por la API key, con una línea por estación. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
+      <p>Gráfico diario generado a partir de la API de <strong>Pollen Sense</strong>. Se muestran las estaciones con muestreo reciente, con una línea por estación. Oleaceae integra Olea y Fraxinus. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
 
       <div class="card">
         <div class="pollensense-summary">
@@ -654,7 +655,7 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
           </div>
           <div class="pollensense-chip">
             <small>Categoría</small>
-            <strong id="psCategoryLabel">Olea</strong>
+            <strong id="psCategoryLabel">Oleaceae</strong>
           </div>
           <div class="pollensense-chip">
             <small>Intervalo</small>
@@ -662,10 +663,10 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
           </div>
         </div>
 
-        <h3>Datos diarios de los últimos 30 días</h3>
+        <h3>Datos diarios de los últimos 180 días</h3>
 <canvas id="pollenSenseChart" height="120"></canvas>
 
-<h3 style="margin-top:24px">Datos horarios de las últimas 48 horas</h3>
+<h3 style="margin-top:24px">Datos horarios de las últimos 7 días</h3>
 <canvas id="pollenSenseHourlyChart" height="120"></canvas>
 
         <p id="psStatus" class="source" style="margin-top:10px">
@@ -673,6 +674,12 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
         </p>
 
         <div id="psError" class="error-box"></div>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <h3>Automáticos y Hirst: seguimiento comparativo</h3>
+        <p>Comparación exploratoria de Olea en días coincidentes de 2026. Cada panel corresponde a una localidad; Córdoba se empareja con Campus Rabanales. Las ubicaciones pueden diferir dentro de la localidad.</p>
+        <figure><img src="images/comparacion-hirst.svg" alt="Series diarias de Olea medidas por Hirst y equipos automáticos en cuatro localidades" style="width:100%;height:auto"><figcaption>Concentraciones diarias en granos/m³. Escalas distintas por localidad; los huecos representan datos ausentes. Se conservan los valores originales, sin calibración ni normalización.</figcaption></figure>
+        <p><strong>El experimento continúa durante un año más para ampliar la muestra y conseguir resultados significativos.</strong> Los datos actuales son preliminares y no permiten establecer equivalencia entre métodos.</p>
       </div>
     </section>
 
@@ -756,6 +763,8 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 
       <div class="card" style="margin-top:14px">
         <h3>Artículos científicos</h3>
+        <p>Oteros, J., Martínez-Bracero, M., Morales-Rojas, T., Tenor-Ortiz, M. J., López-Orozco, R., García-Llamas, C., Farooq, Q., Bellido-Luque, F., Parras, S., Holgado, A., Alcázar, P., García-Mozo, H. y Galán, C.
+        <strong>Integrating airborne pollen and alternate-bearing memory improves early-season ensemble forecasts of olive crop production.</strong> <em>Under review</em>.</p>
 
         <p>
           Farooq, Q., López-Orozco, R., Martínez-Bracero, M., Lucas, R. W., Galán, C., &amp; Oteros, J. (2026).
@@ -769,6 +778,8 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 
       <div class="card" style="margin-top:14px">
         <h3>Presentaciones en congresos y actividades académicas</h3>
+        <p><strong>Comunicación oral · Congreso en India.</strong> Oteros, J. y colaboradores:
+        <em>Assessing the value of airborne pollen for early olive crop forecasting.</em></p>
 
         <ul>
           <li>
@@ -837,6 +848,20 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
       </div>
     </section>
 
+    <section class="section" id="crop-forecast">
+      <h2>10) Predicción de cosecha</h2>
+      <p>Un resultado de PheMPOlive: integrar polen aerotransportado, meteorología y el historial de producción para anticipar la cosecha del olivar al final de mayo. El estudio abarca 22 campañas entre 2002 y 2025 y combina MARS, Cubist y random forest, con validación dejando fuera un año cada vez.</p>
+      <div class="card">
+        <h3>¿Qué aporta el polen a la predicción?</h3>
+        <p>En Andalucía, incorporar polen reduce aproximadamente un 30 % el error absoluto medio: de unos 1,08 millones a 760.880 toneladas. El error relativo pasa del 22,7 % al 16,0 %, con R² = 0,52. Son errores medios de validación histórica, no intervalos de confianza ni garantías para una campaña concreta.</p>
+        <figure><img src="images/prediccion-cosecha.svg" alt="Error relativo por territorio y comparación del error en Andalucía con y sin polen" style="width:100%;height:auto"><figcaption>Síntesis gráfica propia de los resultados del manuscrito en revisión. Predicciones de mayo sin correcciones post-hoc.</figcaption></figure>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <h3>Cómo se estudian los errores excepcionales</h3>
+        <p>Los episodios meteorológicos extremos ayudan a interpretar los mayores desajustes. Las correcciones retrospectivas redujeron el MAE a 423.055 t (R² = 0,80); las actualizaciones meteorológicas hasta diciembre lo situaron en 360.762 t (R² = 0,872). Estos análisis exploratorios utilizan información posterior y necesitan validación independiente antes de aplicarse como predicción operativa.</p>
+        <p class="source">Fuente: Oteros y colaboradores, <em>Integrating airborne pollen and alternate-bearing memory improves early-season ensemble forecasts of olive crop production</em> · <strong>Under review</strong>. Resultados provisionales sujetos a revisión. Visualización divulgativa elaborada para PheMPOlive.</p>
+      </div>
+    </section>
   </main>
 
   <footer class="hero">
@@ -853,7 +878,7 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 
     const POLLENSENSE_API_KEY = 'ldpE3duAB8UqoxEe5Wa8106mHsGLRXHJF5iU6vzA10JbJaaP4FcvJ7TgOoYkAtUxvN6qZmgGVz8ERYY8BeQmob';
     const POLLENSENSE_BASE = 'https://sensors.pollensense.com/api';
-    const POLLENSENSE_DAYS = 30;
+    const POLLENSENSE_DAYS = 180;
     const POLLENSENSE_COLORS = [
       '#2f6f3e',
       '#2f80ed',
@@ -1333,31 +1358,31 @@ let pollenSenseHourlyChart = null;
       const oleaCode = findPollenSenseOleaCode(metricJson);
       const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
 
-      if(!oleaCode && !fraxinusCode){
-        throw new Error('No se encontró Olea ni Fraxinus.');
-      }
+
 
 const oleaCounts = oleaCode ? counts[oleaCode] : null;
 const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
 
-    if(!oleaCounts && !fraxinusCounts){
-        throw new Error('No hay Counts para Olea ni Fraxinus.');
-    }
+
 
       const categoryLabel = "Oleaceae";
 
       const points = new Map();
 
       for(let i = 0; i < moments.length; i++){
-        const volume = Number(cubicMeters[i]);
-        const olea = oleaCounts ? Number(oleaCounts[i]) : 0;
-        const fraxinus = fraxinusCounts ? Number(fraxinusCounts[i]) : 0;
+        const volume = cubicMeters[i] == null ? NaN : Number(cubicMeters[i]);
+        const olea = oleaCounts ? (oleaCounts[i] == null ? NaN : Number(oleaCounts[i])) : 0;
+        const fraxinus = fraxinusCounts ? (fraxinusCounts[i] == null ? NaN : Number(fraxinusCounts[i])) : 0;
         const count = olea + fraxinus;
 
-        if(!Number.isFinite(volume) || volume <= 0) continue;
-        if(!Number.isFinite(count)) continue;
+        if(!Number.isFinite(volume) || volume <= 0 || !Number.isFinite(count)){
+          const missingDate = new Date(moments[i]);
+          if(Number.isFinite(missingDate.getTime())) points.set(missingDate.toISOString().slice(0,10), null);
+          continue;
+        }
 
         const date = new Date(moments[i]);
+        if(!Number.isFinite(date.getTime())) continue;
         const key = date.toISOString().slice(0,10);
         points.set(key, count / volume);
       }
@@ -1394,6 +1419,11 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
         new Set(seriesList.flatMap(series => Array.from(series.points.keys())))
       ).sort();
 
+      if(allDateKeys.length){
+        const first = Date.parse(allDateKeys[0]);
+        const last = Date.parse(allDateKeys[allDateKeys.length - 1]);
+        allDateKeys.splice(0, allDateKeys.length, ...Array.from({length: Math.round((last-first)/86400000)+1}, (_,i) => new Date(first+i*86400000).toISOString().slice(0,10)));
+      }
       const labels = allDateKeys.map(formatDateKeyES);
 
       const datasets = seriesList.map((series, index) => {
@@ -1403,14 +1433,14 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
           label: series.siteLabel,
           data: allDateKeys.map(key => {
             const value = series.points.get(key);
-            return value === undefined ? null : Number(value.toFixed(2));
+            return value == null ? null : Number(value.toFixed(2));
           }),
           borderColor: color,
           backgroundColor: color,
           tension: 0.25,
           pointRadius: 3,
           fill: false,
-          spanGaps: true
+          spanGaps: false
         };
       });
 
@@ -1478,7 +1508,9 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
             });
 
             const series = buildPollenSenseSeries(metricJson, site);
-            seriesList.push(series);
+            // Positive sampled volume within 48 hours establishes recent activity.
+            const latest = Math.max(...Array.from(series.points, ([key, value]) => value === null ? -Infinity : Date.parse(key)));
+            if(latest >= ending.getTime() - 48 * 60 * 60 * 1000) seriesList.push(series);
 
           }catch(error){
             console.warn(`No se pudieron cargar datos del sitio ${site.id}:`, error);
@@ -1487,16 +1519,17 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
         }
 
         if(!seriesList.length){
-          throw new Error(`Ninguna estación devolvió datos válidos. ${failures.slice(0,3).join(' | ')}`);
+          document.querySelector('#pollensense-live .card').hidden = true;
+          return;
         }
 
         renderPollenSenseMultiChart(seriesList);
         const hourlyEnding = new Date();
-const hourlyStarting = new Date(hourlyEnding.getTime() - 48 * 60 * 60 * 1000);
+const hourlyStarting = new Date(hourlyEnding.getTime() - 7 * 24 * 60 * 60 * 1000);
 
 const hourlySeriesList = [];
 
-for(const site of sites){
+for(const site of sites.filter(site => seriesList.some(series => series.siteId === site.id))){
   try{
     const hourlyMetricJson = await pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
       interval: 'hour',
@@ -1547,14 +1580,14 @@ function renderPollenSenseHourlyMultiChart(seriesList){
       label: series.siteLabel,
       data: allDateKeys.map(key => {
         const value = series.points.get(key);
-        return value === undefined ? null : Number(value.toFixed(2));
+        return value == null ? null : Number(value.toFixed(2));
       }),
       borderColor: color,
       backgroundColor: color,
       tension: 0.25,
       pointRadius: 2,
       fill: false,
-      spanGaps: true
+      spanGaps: false
     };
   });
 
@@ -1607,16 +1640,12 @@ function buildPollenSenseHourlySeries(metricJson, site){
   const oleaCode = findPollenSenseOleaCode(metricJson);
   const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
 
-if(!oleaCode && !fraxinusCode){
-  throw new Error('No se encontró Olea ni Fraxinus en datos horarios.');
-}
+
 
 const oleaCounts = oleaCode ? counts[oleaCode] : null;
 const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
 
-if(!oleaCounts && !fraxinusCounts){
-  throw new Error('No hay Counts horarios para Olea ni Fraxinus.');
-}
+
 
   const meta = categories[oleaCode] || {};
   const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
@@ -1624,16 +1653,17 @@ if(!oleaCounts && !fraxinusCounts){
   const points = new Map();
 
   for(let i = 0; i < moments.length; i++){
-    const volume = Number(cubicMeters[i]);
-    const olea = oleaCounts ? Number(oleaCounts[i]) : 0;
-    const fraxinus = fraxinusCounts ? Number(fraxinusCounts[i]) : 0;
+    const volume = cubicMeters[i] == null ? NaN : Number(cubicMeters[i]);
+    const olea = oleaCounts ? (oleaCounts[i] == null ? NaN : Number(oleaCounts[i])) : 0;
+    const fraxinus = fraxinusCounts ? (fraxinusCounts[i] == null ? NaN : Number(fraxinusCounts[i])) : 0;
     const count = olea + fraxinus;
 
     if(!Number.isFinite(volume) || volume <= 0) continue;
     if(!Number.isFinite(count)) continue;
 
     const date = new Date(moments[i]);
-    const key = date.toISOString().slice(0,13) + ':00:00.000Z';
+    if(!Number.isFinite(date.getTime())) continue;
+        const key = date.toISOString().slice(0,13) + ':00:00.000Z';
     points.set(key, count / volume);
   }
 
@@ -1667,7 +1697,7 @@ if(!oleaCounts && !fraxinusCounts){
         if(siteLabel) siteLabel.textContent = 'No disponible';
         if(status) status.textContent = 'No se pudieron cargar los datos de Pollen Sense.';
 
-        showError('psError', error.message);
+        showError('psError', 'No se pudo actualizar la conexión con el servicio.');
       }
     }
 
