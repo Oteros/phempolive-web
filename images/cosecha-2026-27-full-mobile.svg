@@ -65,8 +65,8 @@
 <text x="244.23" y="401" text-anchor="middle" class="axis">2004/05</text>
 <text x="422.00" y="401" text-anchor="middle" class="axis">2025/26</text>
 <path d="M 450 60 V 382" stroke="#aeb9ac" stroke-dasharray="4 5"/>
-<rect x="474.0" y="126.62" width="52" height="28.31" rx="6" fill="#a9aea7" stroke="#7c877d" stroke-width="1.5"/>
-<text x="500.0" y="110.62" text-anchor="middle" class="label" style="font-weight:600;fill:#435342">Franja alta</text>
+<rect x="474.0" y="92.68" width="52" height="62.26" rx="6" fill="#a9aea7" stroke="#7c877d" stroke-width="1.5"/>
+<text x="500.0" y="76.68" text-anchor="middle" class="label" style="font-weight:600;fill:#435342">Franja alta</text>
 <text x="500.0" y="401" text-anchor="middle" class="axis" style="font-weight:700;fill:#203b2e">2026/27</text>
 <text x="280.0" y="427" text-anchor="middle" class="label">Campaña</text>
 </svg>

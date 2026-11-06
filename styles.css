@@ -490,3 +490,27 @@ html { scroll-padding-top: calc(var(--nav-height, 100px) + 20px); }
 .forecast-chart-wrap picture, .forecast-chart-wrap img { display:block; width:100%; height:auto; }
 .chart-toolbar [role="group"] { display:flex; gap:3px; padding:4px; background:#eaf0e3; border-radius:100px; }
 button.chart-toggle:hover { background:#f5f8ef; color:#294e37; }
+
+
+/* A dedicated height gives all four data charts a readable vertical axis. */
+.chart-viewport {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: clamp(480px, 46vw, 700px);
+  margin-block: 16px 24px;
+}
+.chart-viewport canvas { display: block; }
+.olive-accent {
+  position: absolute;
+  right: -24px;
+  bottom: 30px;
+  width: clamp(120px, 13vw, 180px);
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 12px rgb(18 43 28 / 12%));
+}
+@media (max-width: 640px) {
+  .chart-viewport { height: 420px; margin-block: 12px 20px; }
+  .olive-accent { right: -5px; bottom: 42px; width: 120px; }
+}
