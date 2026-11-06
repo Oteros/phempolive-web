@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" role="img" aria-labelledby="title desc">
+<title id="title">Cosecha de aceituna en Andalucía y horizonte 2026/27</title>
+<desc id="desc">Serie de cosechas observadas en millones de toneladas y banda gris orientativa en la zona alta para la campaña 2026/27, sin estimación puntual.</desc>
+<style>text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;fill:#52635a} .label{font-size:14px}.axis{font-size:14px}.heading{font-size:18px;font-weight:650;fill:#203b2e}</style>
+<rect width="100%" height="100%" fill="#fcfcf8" rx="16"/>
+<text x="24" y="28" class="heading">Andalucía · Aceituna fruto</text>
+<text x="24" y="50" class="label">Millones de toneladas</text>
+<rect x="450" y="60" width="100" height="322" rx="14" fill="#eeefea"/>
+<path d="M 58 372.00 H 542" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="377.00" text-anchor="end" class="axis">0</text>
+<path d="M 58 296.50 H 542" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="301.50" text-anchor="end" class="axis">2</text>
+<path d="M 58 221.00 H 542" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="226.00" text-anchor="end" class="axis">4</text>
+<path d="M 58 145.50 H 542" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="150.50" text-anchor="end" class="axis">6</text>
+<path d="M 58 70.00 H 542" stroke="#e0e5dd" stroke-width="1"/>
+<text x="46" y="75.00" text-anchor="end" class="axis">8</text>
+<polyline points="58.00,172.86 98.44,201.99 138.89,92.68 179.33,211.78 219.78,141.78 260.22,154.26 300.67,271.00 341.11,255.73 381.56,138.51 422.00,169.20" fill="none" stroke="#2b6a4b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="58.00" cy="172.86" r="4" fill="#2b6a4b"><title>2016/2017: 5.28 millones de toneladas observadas</title></circle>
+<circle cx="98.44" cy="201.99" r="4" fill="#2b6a4b"><title>2017/2018: 4.50 millones de toneladas observadas</title></circle>
+<circle cx="138.89" cy="92.68" r="4" fill="#2b6a4b"><title>2018/2019: 7.40 millones de toneladas observadas</title></circle>
+<circle cx="179.33" cy="211.78" r="4" fill="#2b6a4b"><title>2019/2020: 4.24 millones de toneladas observadas</title></circle>
+<circle cx="219.78" cy="141.78" r="4" fill="#2b6a4b"><title>2020/2021: 6.10 millones de toneladas observadas</title></circle>
+<circle cx="260.22" cy="154.26" r="4" fill="#2b6a4b"><title>2021/2022: 5.77 millones de toneladas observadas</title></circle>
+<circle cx="300.67" cy="271.00" r="4" fill="#2b6a4b"><title>2022/2023: 2.68 millones de toneladas observadas</title></circle>
+<circle cx="341.11" cy="255.73" r="4" fill="#2b6a4b"><title>2023/2024: 3.08 millones de toneladas observadas</title></circle>
+<circle cx="381.56" cy="138.51" r="4" fill="#2b6a4b"><title>2024/2025: 6.19 millones de toneladas observadas</title></circle>
+<circle cx="422.00" cy="169.20" r="4" fill="#2b6a4b"><title>2025/2026: 5.37 millones de toneladas observadas</title></circle>
+<text x="58.00" y="401" text-anchor="middle" class="axis">2016/17</text>
+<text x="260.22" y="401" text-anchor="middle" class="axis">2021/22</text>
+<text x="422.00" y="401" text-anchor="middle" class="axis">2025/26</text>
+<path d="M 450 60 V 382" stroke="#aeb9ac" stroke-dasharray="4 5"/>
+<rect x="474.0" y="126.62" width="52" height="28.31" rx="6" fill="#a9aea7" stroke="#7c877d" stroke-width="1.5"/>
+<text x="500.0" y="110.62" text-anchor="middle" class="label" style="font-weight:600;fill:#435342">Franja alta</text>
+<text x="500.0" y="401" text-anchor="middle" class="axis" style="font-weight:700;fill:#203b2e">2026/27</text>
+<text x="280.0" y="427" text-anchor="middle" class="label">Campaña</text>
+</svg>

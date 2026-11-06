@@ -405,6 +405,7 @@
       .pollensense-summary{grid-template-columns:1fr}
     }
   </style>
+  <link rel="stylesheet" href="styles.css"/>
   <!-- GoatCounter analytics: global Oteros counter -->
 <script>
   window.goatcounter = window.goatcounter || {};
@@ -417,6 +418,7 @@
 </head>
 
 <body>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBL4TV3K"
@@ -428,9 +430,9 @@
 
   <header class="hero">
     <div class="container hero-inner">
-      <img src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
-      <img src="images/Logounicordoba.png" alt="Universidad de Córdoba" class="logo-uco"/>
-      <img src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
+      <img width="251" height="312" src="images/PheMPolive.png" alt="PheMPOlive" class="logo-main"/>
+      <img width="1652" height="1261" src="images/Logounicordoba.png" alt="Universidad de Córdoba" class="logo-uco"/>
+      <img width="308" height="90" src="images/ack-micin-cofinanciado-ue-ae.png" alt="Financiación MICIU – Cofinanciado UE – AEI" class="logo-funders"/>
 
       <div class="hero-actions">
         <a class="header-cta" href="https://www.uco.es/botanica/es/investigacion/grupos-investigacion" target="_blank" rel="noopener">
@@ -461,7 +463,26 @@
   <main class="container" id="contenido-principal">
 
     <section class="section" id="intro">
-      <h1>PheMPOlive (PID2023-152718OA-I00)</h1>
+      <div class="intro-hero">
+        <div>
+          <p class="hero-eyebrow">CIENCIA PARA EL OLIVAR · UNIVERSIDAD DE CÓRDOBA</p>
+          <h1>Del polen a la<br>próxima cosecha.</h1>
+          <p class="hero-lead">Fenología, datos y tecnología para anticipar la producción del olivar. Explora el trabajo de PheMPOlive y sigue la evolución de la campaña.</p>
+          <div class="hero-links">
+            <a class="cta-link" href="#crop-forecast">Explorar la campaña 2026/27 <span aria-hidden="true">→</span></a>
+            <a class="hero-secondary" href="#pollensense-live">Ver el polen en directo <span aria-hidden="true">→</span></a>
+          </div>
+          <div class="hero-tags"><span>Fenología</span><span>Aerobiología</span><span>Predicción</span></div>
+        </div>
+        <figure class="intro-visual">
+          <img class="intro-photo" src="images/floracion.jpg" alt="Inflorescencias de olivo en plena floración" width="1525" height="1133" fetchpriority="high"/>
+          <figcaption><span>Olea europaea</span> Una señal de hoy para entender la cosecha de mañana.</figcaption>
+        </figure>
+      </div>
+      <details class="intro-details">
+        <summary>El proyecto, el equipo y la metodología</summary>
+        <div class="intro-details-content">
+      <h3>PheMPOlive · PID2023-152718OA-I00</h3>
       <p><strong>Modelización fenológica y automatización del muestreo polínico para una predicción temprana y sostenible de la producción de aceite de oliva.</strong></p>
 
       <div class="grid-2">
@@ -509,10 +530,9 @@
   </p>
 
           </div>
-        </div>
 
         <figure>
-          <img src="images/draft projecto.png" alt="Esquema del proyecto" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="2194" height="1647" src="images/draft projecto.png" alt="Esquema del proyecto" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
 
 <figcaption>
 Flujo conceptual del proyecto PheMPOlive, desde la adquisición de datos hasta la generación de predicciones y su transferencia al sector. 
@@ -529,6 +549,8 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 </figcaption>
         </figure>
       </div>
+        </div>
+      </details>
     </section>
 
     <section class="section" id="harvest-models">
@@ -554,13 +576,13 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
           <p>La relación entre polen y producción está documentada por el Grupo RNM-130 y se consolidó en el modelo de índices para el olivar <span title="Oteros et al., 2014">(Oteros et al., 2014; DOI 10.1007/s13593-013-0198-x)</span>.</p>
 
           <figure>
-            <img src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" class="white-image" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+            <img width="1339" height="753" src="images/Enfoque predictivo.png" alt="Enfoque predictivo" loading="lazy" decoding="async" class="white-image" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
             <figcaption>Arquitectura del sistema de predicción y fuentes de predictores.</figcaption>
           </figure>
         </div>
 
         <figure>
-          <img src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="4040" height="4293" src="images/gradiente ambiental de olivares.png" alt="Gradiente ambiental de olivares" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Distribución de gradientes de condiciones ambientales en las zonas de olivar nacional y de Andalucía.</figcaption>
         </figure>
       </div>
@@ -585,19 +607,19 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
         </div>
 
         <figure>
-          <img src="images/floracion.jpg" alt="Floración de olivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="1525" height="1133" src="images/floracion.jpg" alt="Floración de olivo" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Olivo en plena floración, fase BBCH 65.</figcaption>
         </figure>
       </div>
 
       <div class="grid-2" style="margin-top:10px">
         <figure>
-          <img src="images/feno%20de%20campo.png" alt="Seguimiento semanal de fenología en olivares de Córdoba" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="721" height="472" src="images/feno%20de%20campo.png" alt="Seguimiento semanal de fenología en olivares de Córdoba" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Seguimiento semanal de fenología en olivares de Córdoba.</figcaption>
         </figure>
 
         <figure>
-          <img src="images/phenc.jpg" alt="Regionalización fenológica del olivar" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="801" height="968" src="images/phenc.jpg" alt="Regionalización fenológica del olivar" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Regionalización fenológica del olivar.</figcaption>
         </figure>
       </div>
@@ -628,15 +650,15 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
           <p>Acceso mediante <a href="https://ebas-data.nilu.no/" target="_blank" rel="noopener">EBAS (NILU)</a>. Conjuntos de referencia: <a href="https://data.sylva.bioaerosol.eu/" target="_blank" rel="noopener">data.sylva.bioaerosol.eu</a>.</p>
 
           <div class="logos-inline" style="margin-top:10px">
-            <img src="images/LogoEBAS.png" alt="EBAS"/>
-            <img src="images/SYLVA-sylva.png" alt="SYLVA"/>
+            <img width="1114" height="141" src="images/LogoEBAS.png" alt="EBAS"/>
+            <img width="1446" height="465" src="images/SYLVA-sylva.png" alt="SYLVA"/>
             <img src="images/EU_funded_horizontal_pos.svg" alt="Funded by the European Union"/>
             <img src="images/SERI_funded_horizontal_pos.svg" alt="Supported by SERI Switzerland"/>
           </div>
         </div>
 
         <figure>
-          <img src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
+          <img width="2373" height="779" src="images/dispositivos automáticos.png" alt="Dispositivos automáticos" loading="lazy" decoding="async" style="width:100%;border-radius:14px;border:1px solid var(--border)"/>
           <figcaption>Principales dispositivos automáticos empleados y validados en SYLVA.</figcaption>
         </figure>
       </div>
@@ -851,11 +873,40 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 
     <section class="section" id="crop-forecast">
       <h2>10) Predicción de cosecha</h2>
+      <div class="forecast-spotlight">
+        <div class="forecast-heading">
+          <div><p class="hero-eyebrow">HORIZONTE DE CAMPAÑA · ANDALUCÍA</p><h3>2026/27, una perspectiva de cosecha alta.</h3></div>
+          <span class="forecast-badge">PREVISIÓN DE CAMPAÑA</span>
+        </div>
+        <div class="forecast-grid">
+          <div class="forecast-copy">
+            <p class="forecast-number">2026<span>/27</span></p>
+            <h4>Producción en la franja alta.</h4>
+            <p>La previsión se sitúa en la zona alta. La banda gris permite compararla con la trayectoria de la producción andaluza.</p>
+            <div class="forecast-legend"><span class="legend-observed">Cosecha observada</span><span class="legend-outlook">Previsión orientativa</span></div>
+            <p class="forecast-note">Aceituna fruto · millones de toneladas.<br>Previsión sujeta a la evolución de la campaña.</p>
+          </div>
+          <div class="forecast-chart-wrap">
+            <div class="chart-toolbar">
+              <span>Observado y horizonte 2026/27</span>
+              <div role="group" aria-label="Periodo histórico del gráfico">
+                <button class="chart-toggle" type="button" data-forecast-range="recent" aria-pressed="true">Últimas 10</button>
+                <button class="chart-toggle" type="button" data-forecast-range="full" aria-pressed="false">Toda la serie</button>
+              </div>
+            </div>
+            <picture>
+              <source id="forecastOutlookMobile" media="(max-width: 640px)" srcset="images/cosecha-2026-27-recent-mobile.svg"/>
+              <img id="forecastOutlook" src="images/cosecha-2026-27-recent.svg" width="960" height="480" alt="Cosecha observada de aceituna en Andalucía y banda gris orientativa en la zona alta para 2026/27"/>
+            </picture>
+          </div>
+        </div>
+      </div>
+      <p class="section-kicker" style="margin-top:36px">EL MODELO DETRÁS DE LA PREVISIÓN</p>
       <p>Un resultado de PheMPOlive: integrar polen aerotransportado, meteorología y el historial de producción para anticipar la cosecha del olivar al final de mayo. El estudio abarca 22 campañas entre 2002 y 2025 y combina MARS, Cubist y random forest, con validación dejando fuera un año cada vez.</p>
       <div class="card">
         <h3>¿Qué aporta el polen a la predicción?</h3>
         <p>En Andalucía, incorporar polen reduce aproximadamente un 30 % el error absoluto medio: de unos 1,08 millones a 760.880 toneladas. El error relativo pasa del 22,7 % al 16,0 %, con R² = 0,52. Son errores medios de validación histórica, no intervalos de confianza ni garantías para una campaña concreta.</p>
-        <figure><img src="images/prediccion-cosecha.svg" alt="Error relativo por territorio y comparación del error en Andalucía con y sin polen" style="width:100%;height:auto"><figcaption>Síntesis gráfica propia de los resultados del manuscrito en revisión. Predicciones de mayo sin correcciones post-hoc.</figcaption></figure>
+        <figure><img src="images/prediccion-cosecha.svg" alt="Error relativo por territorio y comparación del error en Andalucía con y sin polen" style="width:100%;height:auto"></figure>
       </div>
     </section>
   </main>
@@ -869,6 +920,7 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
+  <script src="interface.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', init);
 
