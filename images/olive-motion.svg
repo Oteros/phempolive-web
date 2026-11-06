@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 240" role="img" aria-labelledby="olive-title olive-desc">
   <title id="olive-title">Olea europaea · rama con hojas opuestas</title>
-  <desc id="olive-desc">Tres pares de hojas lanceoladas de margen entero, insertadas frente a frente en los mismos nudos. La perspectiva alterna entre pares; sus ápices se orientan hacia el extremo de la rama. Dos aceitunas cuelgan de pedicelos axilares y una yema cierra el brote.</desc>
+  <desc id="olive-desc">Tres pares de hojas lanceoladas de margen entero, insertadas frente a frente en los mismos nudos. La perspectiva alterna entre pares; sus ápices se orientan hacia el extremo de la rama. Una aceituna cuelga de un pedicelo axilar y una yema cierra el brote.</desc>
   <defs>
     <linearGradient id="blade" x1="-9" y1="-40" x2="9" y2="-40" gradientUnits="userSpaceOnUse">
       <stop stop-color="#203e2e"/><stop offset=".34" stop-color="#426a46"/><stop offset=".52" stop-color="#69845b"/><stop offset=".59" stop-color="#4d704b"/><stop offset="1" stop-color="#2a4b36"/>
@@ -63,14 +63,8 @@
       <path d="M0 2 C3 1 4-2 3-6 C0-5-1-1 0 2Z" fill="#636d49"/>
       <path d="M-2-3 Q0-2 2-4" fill="none" stroke="#a5a47c" stroke-width=".6"/>
     </g>
-    <!-- Pedicels originate in the axil at the same lower node. -->
+    <!-- The single fruit pedicel originates in the lower leaf axil. -->
     <g class="axillary-fruits" data-node="94,178">
-      <path d="M94 178 C88 179 81 182 78 190" fill="none" stroke="#7b8b55" stroke-width="1.15" stroke-linecap="round"/>
-      <g transform="translate(75 205) rotate(12) scale(.87 .94)">
-        <path d="M0-17 C9-17 12-9 12 0 C12 11 7 18 0 19 C-8 18-12 9-12 0 C-12-10-8-17 0-17Z" fill="url(#olive-dark)"/>
-        <path d="M-5-10 Q-8-4-7 3" fill="none" stroke="#cad1a6" stroke-width="1.6" stroke-linecap="round" opacity=".18"/>
-        <path d="M-3-16 L-1-18 L1-17 L3-18 L4-15Z" fill="#5a7046"/>
-      </g>
       <path d="M94 178 C108 177 120 185 127 197" fill="none" stroke="#87935d" stroke-width="1.35" stroke-linecap="round"/>
       <g transform="translate(132 213) rotate(-15)"><use xlink:href="#olive-fruit"/></g>
     </g>
