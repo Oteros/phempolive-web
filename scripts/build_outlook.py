@@ -6,7 +6,8 @@ from pathlib import Path
 import pandas as pd
 ROOT=Path(__file__).resolve().parents[1]
 rows=pd.read_excel(ROOT/'data/Crop_Anuarios_JA.xlsx',sheet_name='Crop')
-BAND=(5.75,6.50)
+# Keep the lower outlook threshold; extend the upper edge to the observed historical maximum.
+BAND=(5.75, float(rows.Crop_And.max()) / 1e6)
 def graphic(data,mobile=False):
  w,h=(560,440) if mobile else (960,480)
  left,right,top,bottom=(58,w-18,70,h-68)

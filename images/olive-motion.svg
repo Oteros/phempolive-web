@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" role="img" aria-labelledby="olive-title olive-desc">
+  <title id="olive-title">Una rama de olivo al viento</title>
+  <desc id="olive-desc">Hojas alargadas y dos aceitunas se mecen suavemente sobre un fondo crema.</desc>
+  <defs>
+    <linearGradient id="olive-skin" x1="0" y1="0" x2="1" y2=".8">
+      <stop stop-color="#80965b"/>
+      <stop offset=".6" stop-color="#456449"/>
+      <stop offset="1" stop-color="#294d3a"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .twig { transform-origin:80px 213px; animation:olive-breeze 8s ease-in-out infinite; }
+    .leaf { animation:leaf-breeze 6.5s ease-in-out infinite; }
+    .leaf-a { transform-origin:94px 160px; }
+    .leaf-b { transform-origin:100px 145px; animation-delay:-2.2s; }
+    .leaf-c { transform-origin:112px 115px; animation-delay:-.9s; }
+    .leaf-d { transform-origin:120px 94px; animation-delay:-3.1s; }
+    .leaf-e { transform-origin:131px 66px; animation-delay:-1.6s; }
+    .leaf-f { transform-origin:138px 47px; animation-delay:-4s; }
+    .fruit { transform-origin:101px 142px; animation:fruit-breeze 7s ease-in-out infinite; }
+    .fruit-back { transform-origin:95px 161px; animation-delay:-2.4s; }
+    @keyframes olive-breeze { 0%,100% { transform:rotate(-1.7deg); } 50% { transform:rotate(1.8deg); } }
+    @keyframes leaf-breeze { 0%,100% { transform:rotate(-1.6deg); } 50% { transform:rotate(2.2deg); } }
+    @keyframes fruit-breeze { 0%,100% { transform:rotate(-1deg); } 50% { transform:rotate(2deg); } }
+    @media (prefers-reduced-motion:reduce) { .twig,.leaf,.fruit { animation:none; } }
+  </style>
+  <ellipse cx="100" cy="126" rx="91" ry="105" fill="#f7f7f0" fill-opacity=".97"/>
+  <path d="M30 184 C13 157 14 114 28 88" fill="none" stroke="#e8c886" stroke-width="1.5" stroke-linecap="round" opacity=".8"/>
+  <g class="twig">
+    <path d="M78 215 C88 185 93 156 105 130 C117 100 129 70 140 41" fill="none" stroke="#7a8054" stroke-width="2.5" stroke-linecap="round"/>
+    <g class="leaf leaf-a">
+      <path d="M94 160 C71 155 49 134 43 112 C64 118 86 138 94 160Z" fill="#45664b"/>
+      <path d="M49 119 C64 133 81 148 93 158" fill="none" stroke="#a2b18a" stroke-width=".85" opacity=".75"/>
+    </g>
+    <g class="leaf leaf-b">
+      <path d="M100 145 C113 125 141 108 162 103 C153 124 125 143 100 145Z" fill="#a6b49a"/>
+      <path d="M102 144 C122 133 142 117 157 107" fill="none" stroke="#667e5e" stroke-width=".85" opacity=".7"/>
+    </g>
+    <g class="leaf leaf-c">
+      <path d="M112 115 C89 107 71 87 64 62 C85 70 106 92 112 115Z" fill="#365d43"/>
+      <path d="M69 69 C83 84 98 101 110 113" fill="none" stroke="#9bad83" stroke-width=".85" opacity=".75"/>
+    </g>
+    <g class="leaf leaf-d">
+      <path d="M120 94 C132 74 152 63 174 59 C164 77 143 91 120 94Z" fill="#879e76"/>
+      <path d="M122 93 C137 83 153 72 169 63" fill="none" stroke="#526e4f" stroke-width=".85" opacity=".65"/>
+    </g>
+    <g class="leaf leaf-e">
+      <path d="M131 66 C114 58 104 42 103 21 C119 31 130 47 131 66Z" fill="#537650"/>
+      <path d="M106 27 C114 39 123 53 130 64" fill="none" stroke="#b3c19b" stroke-width=".8" opacity=".7"/>
+    </g>
+    <g class="leaf leaf-f">
+      <path d="M138 47 C139 31 147 17 160 10 C160 26 150 41 138 47Z" fill="#9cac8b"/>
+      <path d="M139 45 C146 35 153 24 158 15" fill="none" stroke="#66805b" stroke-width=".8" opacity=".7"/>
+    </g>
+    <g class="fruit fruit-back">
+      <path d="M95 161 C88 164 81 171 78 177" fill="none" stroke="#7a8054" stroke-width="1.5" stroke-linecap="round"/>
+      <ellipse cx="74" cy="190" rx="12" ry="17" transform="rotate(18 74 190)" fill="#365946"/>
+      <path d="M73 178 C67 181 64 187 65 193" fill="none" stroke="#a1b48b" stroke-width="2.5" stroke-linecap="round" opacity=".3"/>
+    </g>
+    <g class="fruit">
+      <path d="M101 142 C109 145 115 150 118 156" fill="none" stroke="#7a8054" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="121" cy="171" rx="13" ry="18" transform="rotate(-13 121 171)" fill="url(#olive-skin)"/>
+      <path d="M116 159 C112 162 111 169 113 174" fill="none" stroke="#d0d6ad" stroke-width="3" stroke-linecap="round" opacity=".38"/>
+      <path d="M117 155 L119 157 L122 154" fill="none" stroke="#536c45" stroke-width="1.2" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
