@@ -645,9 +645,10 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
     <section class="section" id="pollensense-live">
       <h2>6) Datos automáticos Pollen Sense</h2>
 
-      <p>Gráfico diario generado a partir de la API de <strong>Pollen Sense</strong>. Se muestran las estaciones con muestreo reciente, con una línea por estación. Oleaceae integra Olea y Fraxinus. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
+      <p>Datos actualizados directamente desde la API de <strong>Pollen Sense</strong>, con una línea por estación. Actualización automática cada 15 minutos. Oleaceae integra Olea y Fraxinus. La concentración se calcula a partir de los recuentos crudos y el volumen de aire muestreado para cada intervalo diario.</p>
 
-      <div class="card">
+      <div class="card" id="pollenSenseLiveCard">
+        <button type="button" class="cta-link" id="psRefresh">Actualizar datos</button>
         <div class="pollensense-summary">
           <div class="pollensense-chip">
             <small>Estaciones</small>
@@ -663,11 +664,14 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
           </div>
         </div>
 
-        <h3>Datos diarios de los últimos 180 días</h3>
-<canvas id="pollenSenseChart" height="120"></canvas>
-
-<h3 style="margin-top:24px">Datos horarios de las últimos 7 días</h3>
-<canvas id="pollenSenseHourlyChart" height="120"></canvas>
+        <div id="psDailyPanel">
+          <h3 id="psDailyTitle">Datos diarios de los últimos 180 días</h3>
+          <canvas id="pollenSenseChart" height="120"></canvas>
+        </div>
+        <div id="psHourlyPanel">
+          <h3 id="psHourlyTitle" style="margin-top:24px">Datos horarios de los últimos 7 días</h3>
+          <canvas id="pollenSenseHourlyChart" height="120"></canvas>
+        </div>
 
         <p id="psStatus" class="source" style="margin-top:10px">
           Cargando datos diarios desde Pollen Sense…
@@ -675,12 +679,7 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
 
         <div id="psError" class="error-box"></div>
       </div>
-      <div class="card" style="margin-top:20px">
-        <h3>Automáticos y Hirst: seguimiento comparativo</h3>
-        <p>Comparación exploratoria de Olea en días coincidentes de 2026. Cada panel corresponde a una localidad; Córdoba se empareja con Campus Rabanales. Las ubicaciones pueden diferir dentro de la localidad.</p>
-        <figure><img src="images/comparacion-hirst.svg" alt="Series diarias de Olea medidas por Hirst y equipos automáticos en cuatro localidades" style="width:100%;height:auto"><figcaption>Concentraciones diarias en granos/m³. Escalas distintas por localidad; los huecos representan datos ausentes. Se conservan los valores originales, sin calibración ni normalización.</figcaption></figure>
-        <p><strong>El experimento continúa durante un año más para ampliar la muestra y conseguir resultados significativos.</strong> Los datos actuales son preliminares y no permiten establecer equivalencia entre métodos.</p>
-      </div>
+
     </section>
 
     <section class="section" id="open-data">
@@ -760,6 +759,13 @@ Finalmente, los resultados se integran en una <strong>plataforma de información
       <h2>9) Resultados y difusión</h2>
 
       <p>Los resultados del proyecto se están difundiendo mediante publicaciones científicas, congresos especializados, actividades formativas y canales de comunicación del grupo. Esta transferencia es esencial para conectar los avances metodológicos en fenología, aerobiología y automatización con el sector olivarero, la comunidad científica y la sociedad.</p>
+
+      <div class="card" style="margin-top:20px">
+        <h3>Comparación experimental: automáticos y Hirst</h3>
+        <p>Datos históricos del experimento, independientes de la API en tiempo real. Comparación exploratoria de Olea en días coincidentes de 2026. Cada panel corresponde a una localidad; Córdoba se empareja con Campus Rabanales. Las ubicaciones pueden diferir dentro de la localidad.</p>
+        <figure><img src="images/comparacion-hirst.svg" alt="Series diarias de Olea medidas por Hirst y equipos automáticos en cuatro localidades" style="width:100%;height:auto"><figcaption>Concentraciones diarias en granos/m³. Escalas distintas por localidad; los huecos representan datos ausentes. Se conservan los valores originales, sin calibración ni normalización.</figcaption></figure>
+        <p><strong>El experimento continúa durante un año más para ampliar la muestra y conseguir resultados significativos.</strong> Los datos actuales son preliminares y no permiten establecer equivalencia entre métodos.</p>
+      </div>
 
       <div class="card" style="margin-top:14px">
         <h3>Artículos científicos</h3>
@@ -1184,6 +1190,7 @@ let pollenSenseHourlyChart = null;
       const finalUrl = makePollenSenseUrl(path, params);
 
       const response = await fetch(finalUrl, {
+        signal: AbortSignal.timeout(30000),
         method: 'GET',
         headers: {'Accept': 'application/json'},
         cache: 'no-store'
@@ -1214,12 +1221,12 @@ let pollenSenseHourlyChart = null;
 
       const records =
         Array.isArray(root) ? root :
-        Array.isArray(root.Sites) ? root.Sites :
-        Array.isArray(root.sites) ? root.sites :
-        Array.isArray(root.Items) ? root.Items :
-        Array.isArray(root.items) ? root.items :
-        Array.isArray(root.Results) ? root.Results :
-        Array.isArray(root.results) ? root.results :
+        Array.isArray(root?.Sites) ? root?.Sites :
+        Array.isArray(root?.sites) ? root?.sites :
+        Array.isArray(root?.Items) ? root?.Items :
+        Array.isArray(root?.items) ? root?.items :
+        Array.isArray(root?.Results) ? root?.Results :
+        Array.isArray(root?.results) ? root?.results :
         [];
 
       return records
@@ -1229,15 +1236,19 @@ let pollenSenseHourlyChart = null;
 
           return {
             id: id === undefined || id === null ? '' : String(id),
-            name: name ? String(name) : ''
+            name: name ? String(name) : '',
+            active: ![false, 0, 'false', 'False', '0'].includes(site.IsActive ?? site.isActive ?? site.Active ?? site.active)
           };
         })
-        .filter(site => site.id);
+        .filter(site => site.id && site.active);
     }
 
     function findPollenSenseMetricRoot(json){
       const root = unwrapPollenSense(json);
 
+      if(!root || typeof root !== 'object'){
+        throw new Error('Respuesta de métricas no válida.');
+      }
       if(root.Moments || root.moments || root.Layers || root.layers){
         return root;
       }
@@ -1290,12 +1301,12 @@ let pollenSenseHourlyChart = null;
       for(const [code, meta] of Object.entries(categories)){
         const haystack = [
           code,
-          meta.Description,
-          meta.description,
-          meta.CommonName,
-          meta.commonName,
-          meta.GroupCode,
-          meta.groupCode
+          meta?.Description,
+          meta?.description,
+          meta?.CommonName,
+          meta?.commonName,
+          meta?.GroupCode,
+          meta?.groupCode
         ].filter(Boolean).join(' ').toLowerCase();
 
         if(haystack.includes('olea') || haystack.includes('olive') || haystack.includes('olivo')){
@@ -1320,10 +1331,10 @@ let pollenSenseHourlyChart = null;
   for(const [code, meta] of Object.entries(categories)){
     const haystack = [
       code,
-      meta.Description,
-      meta.description,
-      meta.CommonName,
-      meta.commonName
+      meta?.Description,
+      meta?.description,
+      meta?.CommonName,
+      meta?.commonName
     ].filter(Boolean).join(' ').toLowerCase();
 
     if(haystack.includes('fraxinus') || haystack.includes('fresno')){
@@ -1339,64 +1350,38 @@ let pollenSenseHourlyChart = null;
 
   return null;
 }
-    function buildPollenSenseSeries(metricJson, site){
+    function buildPollenSenseSeries(metricJson, site, interval = 'day'){
       const root = findPollenSenseMetricRoot(metricJson);
-
       const moments = root.Moments || root.moments || [];
       const cubicMeters = root.CubicMeters || root.cubicMeters || [];
-      const categories = root.Categories || root.categories || {};
       const counts = getPollenSenseCounts(root);
-
-      if(!Array.isArray(moments) || !moments.length){
-        throw new Error('No hay Moments en la respuesta de Pollen Sense.');
-      }
-
-      if(!Array.isArray(cubicMeters) || !cubicMeters.length){
-        throw new Error('No hay CubicMeters en la respuesta de Pollen Sense.');
-      }
-
       const oleaCode = findPollenSenseOleaCode(metricJson);
       const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
-
-
-
-const oleaCounts = oleaCode ? counts[oleaCode] : null;
-const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
-
-
-
-      const categoryLabel = "Oleaceae";
-
+      const oleaCounts = oleaCode ? counts[oleaCode] : null;
+      const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
       const points = new Map();
 
       for(let i = 0; i < moments.length; i++){
+        const date = new Date(moments[i]);
+        if(!Number.isFinite(date.getTime())) continue;
+        const key = interval === 'hour'
+          ? date.toISOString().slice(0,13) + ':00:00.000Z'
+          : date.toISOString().slice(0,10);
         const volume = cubicMeters[i] == null ? NaN : Number(cubicMeters[i]);
+        // An omitted category means zero detections; an explicit missing count stays missing.
         const olea = oleaCounts ? (oleaCounts[i] == null ? NaN : Number(oleaCounts[i])) : 0;
         const fraxinus = fraxinusCounts ? (fraxinusCounts[i] == null ? NaN : Number(fraxinusCounts[i])) : 0;
         const count = olea + fraxinus;
-
-        if(!Number.isFinite(volume) || volume <= 0 || !Number.isFinite(count)){
-          const missingDate = new Date(moments[i]);
-          if(Number.isFinite(missingDate.getTime())) points.set(missingDate.toISOString().slice(0,10), null);
-          continue;
-        }
-
-        const date = new Date(moments[i]);
-        if(!Number.isFinite(date.getTime())) continue;
-        const key = date.toISOString().slice(0,10);
-        points.set(key, count / volume);
+        points.set(key, Number.isFinite(volume) && volume > 0 && Number.isFinite(count)
+          ? count / volume : null);
       }
 
-      if(!points.size){
-        throw new Error('La categoría Olea existe, pero no hay puntos válidos para graficar.');
-      }
-
-     return {
-  siteId: site.id,
-  siteLabel: site.name ? site.name : site.id,
-  categoryLabel,
-  points
-};
+      return {
+        siteId: site.id,
+        siteLabel: site.name || site.id,
+        categoryLabel: 'Oleaceae',
+        points
+      };
     }
 
     function formatDateKeyES(dateKey){
@@ -1474,234 +1459,165 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
       });
     }
 
+    function formatDateHourES(date){
+      return new Intl.DateTimeFormat('es-ES', {
+        day:'2-digit',
+        month:'2-digit',
+        hour:'2-digit'
+      }).format(date);
+    }
+
+    function renderPollenSenseHourlyMultiChart(seriesList){
+      const canvas = document.getElementById('pollenSenseHourlyChart');
+      if(!canvas) return;
+
+      if(pollenSenseHourlyChart){
+        pollenSenseHourlyChart.destroy();
+      }
+
+      const allDateKeys = Array.from(
+        new Set(seriesList.flatMap(series => Array.from(series.points.keys())))
+      ).sort();
+
+      if(allDateKeys.length){
+        const first = Date.parse(allDateKeys[0]);
+        const last = Date.parse(allDateKeys[allDateKeys.length - 1]);
+        allDateKeys.splice(0, allDateKeys.length, ...Array.from({length: Math.round((last-first)/3600000)+1}, (_,i) => new Date(first+i*3600000).toISOString()));
+      }
+      const labels = allDateKeys.map(key => {
+        const date = new Date(key);
+        return formatDateHourES(date);
+      });
+
+      const datasets = seriesList.map((series, index) => {
+        const color = POLLENSENSE_COLORS[index % POLLENSENSE_COLORS.length];
+
+        return {
+          label: series.siteLabel,
+          data: allDateKeys.map(key => {
+            const value = series.points.get(key);
+            return value == null ? null : Number(value.toFixed(2));
+          }),
+          borderColor: color,
+          backgroundColor: color,
+          tension: 0.25,
+          pointRadius: 2,
+          fill: false,
+          spanGaps: false
+        };
+      });
+
+      pollenSenseHourlyChart = new Chart(canvas, {
+        type: 'line',
+        data: {labels, datasets},
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {position: 'bottom'},
+            tooltip: {
+              callbacks: {
+                label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)} partículas/m³`
+              }
+            }
+          },
+          interaction: {mode: 'index', intersect: false},
+          scales: {
+            x: {
+              grid: {color: '#ecf0e6'},
+              ticks: {maxTicksLimit: 12, maxRotation: 60}
+            },
+            y: {
+              beginAtZero: true,
+              grid: {color: '#ecf0e6'},
+              title: {display: true, text: 'Partículas/m³'}
+            }
+          }
+        }
+      });
+    }
+
+    function buildPollenSenseHourlySeries(metricJson, site){
+      return buildPollenSenseSeries(metricJson, site, 'hour');
+    }
+
+    // Query each interval independently. A daily failure must never suppress live hourly data.
+    async function fetchPollenSenseInterval(site, interval, ending){
+      const days = interval === 'day' ? POLLENSENSE_DAYS : 7;
+      const request = daysBack => pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
+        interval,
+        starting: new Date(ending.getTime() - daysBack * 86400000).toISOString(),
+        ending: ending.toISOString()
+      });
+      let metricJson;
+      let windowDays = days;
+      try{
+        metricJson = await request(days);
+      }catch(error){
+        // Some service plans limit long queries; retain the original shorter window as fallback.
+        windowDays = interval === 'day' ? 30 : 2;
+        metricJson = await request(windowDays);
+      }
+      const series = buildPollenSenseSeries(metricJson, site, interval);
+      series.windowDays = windowDays;
+      return series;
+    }
+
+    let pollenSenseLoading = false;
     async function loadPollenSenseLive(){
+      if(pollenSenseLoading) return;
+      pollenSenseLoading = true;
       const status = document.getElementById('psStatus');
       const siteLabel = document.getElementById('psSiteLabel');
-      const categoryLabel = document.getElementById('psCategoryLabel');
-
+      const refresh = document.getElementById('psRefresh');
+      const card = document.getElementById('pollenSenseLiveCard');
+      if(card) card.hidden = false;
+      if(refresh) refresh.disabled = true;
       hideError('psError');
-
-      if(status) status.textContent = 'Cargando sitios disponibles desde Pollen Sense…';
+      if(status) status.textContent = 'Actualizando datos desde Pollen Sense…';
 
       try{
-        const sitesJson = await pollenSenseFetch('/sites');
-        const sites = normalizePollenSenseSites(sitesJson);
-
-        if(!sites.length){
-          throw new Error('No se encontraron sitios accesibles para esta API key.');
-        }
-
-        if(status) status.textContent = `Estaciones detectadas: ${sites.length}. Cargando métricas diarias…`;
-
+        const sites = normalizePollenSenseSites(await pollenSenseFetch('/sites'));
         const ending = new Date();
-        const starting = new Date(ending.getTime() - POLLENSENSE_DAYS * 24 * 60 * 60 * 1000);
-
-        const seriesList = [];
-        const failures = [];
-
-        for(const site of sites){
-          try{
-            const metricJson = await pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
-              interval: 'day',
-              starting: starting.toISOString(),
-              ending: ending.toISOString()
-            });
-
-            const series = buildPollenSenseSeries(metricJson, site);
-            // Positive sampled volume within 48 hours establishes recent activity.
-            const latest = Math.max(...Array.from(series.points, ([key, value]) => value === null ? -Infinity : Date.parse(key)));
-            if(latest >= ending.getTime() - 48 * 60 * 60 * 1000) seriesList.push(series);
-
-          }catch(error){
-            console.warn(`No se pudieron cargar datos del sitio ${site.id}:`, error);
-            failures.push(`${site.name || site.id}: ${error.message}`);
+        const loadInterval = async interval => {
+          const results = await Promise.allSettled(sites.map(site => fetchPollenSenseInterval(site, interval, ending)));
+          const series = results.filter(result => result.status === 'fulfilled')
+            .map(result => result.value)
+            .filter(series => Array.from(series.points.values()).some(value => value !== null));
+          const daily = interval === 'day';
+          const panel = document.getElementById(daily ? 'psDailyPanel' : 'psHourlyPanel');
+          if(panel) panel.hidden = !series.length;
+          if(series.length){
+            const title = document.getElementById(daily ? 'psDailyTitle' : 'psHourlyTitle');
+            const limited = series.some(item => item.windowDays < (daily ? POLLENSENSE_DAYS : 7));
+            if(title) title.textContent = daily
+              ? (limited ? 'Datos diarios disponibles (hasta 180 días)' : 'Datos diarios de los últimos 180 días')
+              : (limited ? 'Datos horarios disponibles (hasta 7 días)' : 'Datos horarios de los últimos 7 días');
+            if(daily) renderPollenSenseMultiChart(series);
+            else renderPollenSenseHourlyMultiChart(series);
           }
+          return {series, failed: results.some(result => result.status === 'rejected')};
+        };
+        const [daily, hourly] = await Promise.all([loadInterval('day'), loadInterval('hour')]);
+        const siteIds = new Set([...daily.series, ...hourly.series].map(series => series.siteId));
+        if(siteLabel) siteLabel.textContent = siteIds.size ? `${siteIds.size} estación/es` : '—';
+        if(status) status.textContent = `Consulta API: ${ending.toLocaleString('es-ES')}`;
+        if(daily.failed || hourly.failed){
+          showError('psError', 'Algunos datos no se han podido actualizar. Puedes volver a intentarlo.');
         }
-
-        if(!seriesList.length){
-          document.querySelector('#pollensense-live .card').hidden = true;
-          return;
-        }
-
-        renderPollenSenseMultiChart(seriesList);
-        const hourlyEnding = new Date();
-const hourlyStarting = new Date(hourlyEnding.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-const hourlySeriesList = [];
-
-for(const site of sites.filter(site => seriesList.some(series => series.siteId === site.id))){
-  try{
-    const hourlyMetricJson = await pollenSenseFetch(`/v2/sites/${encodeURIComponent(site.id)}/metrics`, {
-      interval: 'hour',
-      starting: hourlyStarting.toISOString(),
-      ending: hourlyEnding.toISOString()
-    });
-
-    const hourlySeries = buildPollenSenseHourlySeries(hourlyMetricJson, site);
-    hourlySeriesList.push(hourlySeries);
-
-  }catch(error){
-    console.warn(`No se pudieron cargar datos horarios del sitio ${site.id}:`, error);
-  }
-}
-
-if(hourlySeriesList.length){
-  renderPollenSenseHourlyMultiChart(hourlySeriesList);
-}
-        function formatDateHourES(date){
-  return new Intl.DateTimeFormat('es-ES', {
-    day:'2-digit',
-    month:'2-digit',
-    hour:'2-digit'
-  }).format(date);
-}
-
-function renderPollenSenseHourlyMultiChart(seriesList){
-  const canvas = document.getElementById('pollenSenseHourlyChart');
-  if(!canvas) return;
-
-  if(pollenSenseHourlyChart){
-    pollenSenseHourlyChart.destroy();
-  }
-
-  const allDateKeys = Array.from(
-    new Set(seriesList.flatMap(series => Array.from(series.points.keys())))
-  ).sort();
-
-  const labels = allDateKeys.map(key => {
-    const date = new Date(key);
-    return formatDateHourES(date);
-  });
-
-  const datasets = seriesList.map((series, index) => {
-    const color = POLLENSENSE_COLORS[index % POLLENSENSE_COLORS.length];
-
-    return {
-      label: series.siteLabel,
-      data: allDateKeys.map(key => {
-        const value = series.points.get(key);
-        return value == null ? null : Number(value.toFixed(2));
-      }),
-      borderColor: color,
-      backgroundColor: color,
-      tension: 0.25,
-      pointRadius: 2,
-      fill: false,
-      spanGaps: false
-    };
-  });
-
-  pollenSenseHourlyChart = new Chart(canvas, {
-    type: 'line',
-    data: {labels, datasets},
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {position: 'bottom'},
-        tooltip: {
-          callbacks: {
-            label: context => `${context.dataset.label}: ${Number(context.raw).toFixed(2)} partículas/m³`
-          }
-        }
-      },
-      interaction: {mode: 'index', intersect: false},
-      scales: {
-        x: {
-          grid: {color: '#ecf0e6'},
-          ticks: {maxTicksLimit: 12, maxRotation: 60}
-        },
-        y: {
-          beginAtZero: true,
-          grid: {color: '#ecf0e6'},
-          title: {display: true, text: 'Partículas/m³'}
-        }
-      }
-    }
-  });
-}
-
-function buildPollenSenseHourlySeries(metricJson, site){
-  const root = findPollenSenseMetricRoot(metricJson);
-
-  const moments = root.Moments || root.moments || [];
-  const cubicMeters = root.CubicMeters || root.cubicMeters || [];
-  const categories = root.Categories || root.categories || {};
-  const counts = getPollenSenseCounts(root);
-
-  if(!Array.isArray(moments) || !moments.length){
-    throw new Error('No hay Moments en la respuesta horaria de Pollen Sense.');
-  }
-
-  if(!Array.isArray(cubicMeters) || !cubicMeters.length){
-    throw new Error('No hay CubicMeters en la respuesta horaria de Pollen Sense.');
-  }
-
-  const oleaCode = findPollenSenseOleaCode(metricJson);
-  const fraxinusCode = findPollenSenseFraxinusCode(metricJson);
-
-
-
-const oleaCounts = oleaCode ? counts[oleaCode] : null;
-const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
-
-
-
-  const meta = categories[oleaCode] || {};
-  const categoryLabel = meta.CommonName || meta.commonName || meta.Description || meta.description || oleaCode;
-
-  const points = new Map();
-
-  for(let i = 0; i < moments.length; i++){
-    const volume = cubicMeters[i] == null ? NaN : Number(cubicMeters[i]);
-    const olea = oleaCounts ? (oleaCounts[i] == null ? NaN : Number(oleaCounts[i])) : 0;
-    const fraxinus = fraxinusCounts ? (fraxinusCounts[i] == null ? NaN : Number(fraxinusCounts[i])) : 0;
-    const count = olea + fraxinus;
-
-    if(!Number.isFinite(volume) || volume <= 0) continue;
-    if(!Number.isFinite(count)) continue;
-
-    const date = new Date(moments[i]);
-    if(!Number.isFinite(date.getTime())) continue;
-        const key = date.toISOString().slice(0,13) + ':00:00.000Z';
-    points.set(key, count / volume);
-  }
-
-  if(!points.size){
-    throw new Error('La categoría Olea existe, pero no hay puntos horarios válidos para graficar.');
-  }
-
-  return {
-    siteId: site.id,
-    siteLabel: site.name ? site.name : site.id,
-    categoryLabel,
-    points
-  };
-}
-
-        if(siteLabel){
-          siteLabel.textContent = `${seriesList.length} estación/es`;
-        }
-
-        if(categoryLabel){
-          categoryLabel.textContent = seriesList[0].categoryLabel;
-        }
-
-       if(status){
-  status.textContent = '';
-}
-
       }catch(error){
-        console.error(error);
-
-        if(siteLabel) siteLabel.textContent = 'No disponible';
-        if(status) status.textContent = 'No se pudieron cargar los datos de Pollen Sense.';
-
+        if(status) status.textContent = '';
         showError('psError', 'No se pudo actualizar la conexión con el servicio.');
+      }finally{
+        pollenSenseLoading = false;
+        if(refresh) refresh.disabled = false;
       }
     }
 
     async function init(){
+      loadPollenSenseLive();
+      document.getElementById('psRefresh').addEventListener('click', loadPollenSenseLive);
+      window.setInterval(loadPollenSenseLive, 15 * 60 * 1000);
       try{
         const crop = await loadCropFromXlsx();
         setKpis(crop);
@@ -1723,7 +1639,6 @@ const fraxinusCounts = fraxinusCode ? counts[fraxinusCode] : null;
         showError('pollenError', error.message);
       }
 
-      loadPollenSenseLive();
     }
   </script>
 
