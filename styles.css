@@ -557,7 +557,8 @@ button.chart-toggle:hover { background:#f5f8ef; color:#294e37; }
   right: -24px;
   bottom: 30px;
   width: clamp(120px, 13vw, 180px);
-  height: auto;
+  aspect-ratio: 5 / 6;
+  background: url("images/olive-motion.svg") center / contain no-repeat;
   pointer-events: none;
   filter: drop-shadow(0 8px 12px rgb(18 43 28 / 12%));
 }
